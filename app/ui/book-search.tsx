@@ -1,35 +1,39 @@
 "use client"
 
 import * as React from "react"
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react"
+import { Check, Search } from "lucide-react"
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import { Book, BookItem, GoogleBooksApiResponse } from "../lib/definitions"
+    Command,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import { BookItem, GoogleBooksApiResponse } from "../lib/definitions"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const cn = (...classes: (string | undefined | null | false)[]): string => {
     return classes.filter(Boolean).join(' ');
 }
 
-const fetchOptionsFromApi = (query: string): Promise<GoogleBooksApiResponse> => {
+const fetchOptionsFromApi = (query: string, userId: string): Promise<GoogleBooksApiResponse> => {
     return fetch("/api/search_books", {
         method: "POST",
         body: JSON.stringify({
-            query: query
+            query: query,
+            userId: userId
         })
     }).then((result) => {
         if (!result.ok) {
-            return []
+            return { items: [] };
         }
-
-        return result.json() ?? []
-    })
+        return result.json();
+    }).catch(() => {
+        return { items: [] };
+    });
 };
 
 
-export default function BookSearch({ setSelectedBook }: { setSelectedBook: (book: BookItem) => void }) {
+export default function BookSearch({ selectedBook, setSelectedBook, userId }: { selectedBook: BookItem | null, setSelectedBook: (book: BookItem | null) => void, userId: string }) {
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState<string>("");
     const [inputValue, setInputValue] = React.useState("");
@@ -38,15 +42,30 @@ export default function BookSearch({ setSelectedBook }: { setSelectedBook: (book
     const isSelectionChange = React.useRef(false);
 
     React.useEffect(() => {
+        if (selectedBook === null) {
+            setValue("");
+            setInputValue("");
+        } else if (selectedBook) {
+            setInputValue(selectedBook.volumeInfo.title ?? "Unbekanntes Buch");
+            setValue(selectedBook.id);
+        }
+    }, [selectedBook]);
+
+    React.useEffect(() => {
         if (isSelectionChange.current) {
             isSelectionChange.current = false;
             return;
         }
 
+        if (inputValue.trim() === "") {
+            setOptions([]);
+            return;
+        }
+
         const handler = setTimeout(() => {
             setIsLoading(true);
-            fetchOptionsFromApi(inputValue).then(newOptions => {
-                setOptions(newOptions.items);
+            fetchOptionsFromApi(inputValue, userId).then(newOptions => {
+                setOptions(newOptions.items ?? []);
                 setIsLoading(false);
             });
         }, 750);
@@ -59,102 +78,106 @@ export default function BookSearch({ setSelectedBook }: { setSelectedBook: (book
     const handleSelectOption = (option: BookItem) => {
         isSelectionChange.current = true;
         setValue(option.id);
-        setInputValue(option.volumeInfo.title);
+        setInputValue(option.volumeInfo.title ?? "Unbekanntes Buch");
         setOpen(false);
         setSelectedBook(option)
     }
 
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <div className="relative">
-                <PopoverTrigger asChild>
-                    <input
-                        type="text"
-                        role="combobox"
-                        aria-expanded={open}
-                        value={inputValue}
-                        onFocus={() => setOpen(true)}
-                        onChange={(e) => {
-                            setOpen(true);
-                            setInputValue(e.target.value)
-                        }}
-                        placeholder="Suche ein Buch..."
-                        className="flex h-10 w-full items-center justify-between rounded-md border border-gray-200 bg-white pl-3 pr-10 py-2 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder-gray-400 dark:focus:ring-gray-800"
-                    />
-                </PopoverTrigger>
-                <ChevronsUpDown
-                    className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 shrink-0 opacity-50 cursor-pointer"
-                    onClick={() => setOpen(!open)}
+    function BookResultCard({ book }: { book: BookItem }) {
+        return <div
+            onClick={() => handleSelectOption(book)}
+            className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+            <Check
+                className={cn(
+                    "mr-2 h-4 w-4",
+                    value === book.id ? "opacity-100" : "opacity-0"
+                )}
+            />
+            {book.volumeInfo.imageLinks?.smallThumbnail ? (
+                <img
+                    src={book.volumeInfo.imageLinks.smallThumbnail}
+                    className="mr-2 h-10 w-7 object-cover rounded"
                 />
+            ) : <img
+                src={'https://no-image-found.entcheneric.com/image?width=128&height=181'}
+                className="mr-2 h-10 w-7 object-cover rounded"
+            />}
+            <div className="flex flex-col min-w-0">
+                <span className="font-medium truncate max-w-xs">
+                    {book.volumeInfo.title ? book.volumeInfo.title.length > 40
+                        ? book.volumeInfo.title.slice(0, 37) + "..."
+                        : book.volumeInfo.title : "Unbekannter Titel"}
+                </span>
+                <span className="text-xs text-gray-500 truncate max-w-xs">
+                    {book.volumeInfo.authors ? book.volumeInfo.authors?.join(", ").length > 40
+                        ? book.volumeInfo.authors?.join(", ").slice(0, 37) + "..."
+                        : book.volumeInfo.authors?.join(", ")
+                        : "Unbekannter Autor"}
+                    {book.volumeInfo.publishedDate
+                        ? ` • ${book.volumeInfo.publishedDate.slice(0, 4)}`
+                        : ""}
+                </span>
+                {book.volumeInfo.description && (
+                    <span className="text-xs text-gray-400 truncate max-w-xs">
+                        {book.volumeInfo.description.length > 80
+                            ? book.volumeInfo.description.slice(0, 77) + "..."
+                            : book.volumeInfo.description}
+                    </span>
+                )}
             </div>
+        </div>
+    }
 
-            {open && (
-                <PopoverContent
-                    onOpenAutoFocus={(e) => e.preventDefault()}
-                    className="w-[--radix-popover-trigger-width] mt-1 p-0 z-50"
-                    sideOffset={5}
-                    align="start"
-                >
-                    <div className="rounded-md border bg-white text-gray-950 shadow-md dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50">
-                        <div className="max-h-[300px] overflow-y-auto p-1">
-                            {isLoading ? (
-                                <div className="flex items-center justify-center p-4">
-                                    <Loader2 className="h-5 w-5 animate-spin text-gray-500" />
-                                    <span className="ml-2 text-sm text-gray-500">Lade...</span>
-                                </div>
-                            ) : !!options && options.length > 0 ? (
-                                options.map((option) => (
-                                    <div
-                                        key={option.id}
-                                        onClick={() => handleSelectOption(option)}
-                                        className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-gray-100 dark:hover:bg-gray-800"
-                                    >
-                                        <Check
-                                            className={cn(
-                                                "mr-2 h-4 w-4",
-                                                value === option.id ? "opacity-100" : "opacity-0"
-                                            )}
-                                        />
-                                        {option.volumeInfo.imageLinks?.smallThumbnail && (
-                                            <img
-                                                src={option.volumeInfo.imageLinks.smallThumbnail}
-                                                alt={option.volumeInfo.title}
-                                                className="mr-2 h-10 w-7 object-cover rounded"
-                                            />
-                                        )}
-                                        <div className="flex flex-col min-w-0">
-                                            <span className="font-medium truncate max-w-xs">
-                                                {option.volumeInfo.title.length > 40
-                                                    ? option.volumeInfo.title.slice(0, 37) + "..."
-                                                    : option.volumeInfo.title}
-                                            </span>
-                                            <span className="text-xs text-gray-500 truncate max-w-xs">
-                                                {option.volumeInfo.authors?.join(", ").length > 40
-                                                    ? option.volumeInfo.authors?.join(", ").slice(0, 37) + "..."
-                                                    : option.volumeInfo.authors?.join(", ")}
-                                                {option.volumeInfo.publishedDate
-                                                    ? ` • ${option.volumeInfo.publishedDate.slice(0, 4)}`
-                                                    : ""}
-                                            </span>
-                                            {option.volumeInfo.description && (
-                                                <span className="text-xs text-gray-400 truncate max-w-xs">
-                                                    {option.volumeInfo.description.length > 80
-                                                        ? option.volumeInfo.description.slice(0, 77) + "..."
-                                                        : option.volumeInfo.description}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="p-4 text-center text-sm text-gray-500">
-                                    Keine Bücher gefunden.
-                                </p>
-                            )}
+    return (
+        <Command>
+            <div className="relative">
+            <Input
+                placeholder="Suche ein Buch..."
+                value={inputValue}
+                onChange={(e) => {
+                setInputValue(e.target.value);
+                if (selectedBook) {
+                    setSelectedBook(null);
+                }
+                }}
+                className="pl-10"
+            />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+            </div>
+            <CommandList>
+            {isLoading ? (
+                <>
+                {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={i}>
+                    <div className="relative flex w-full items-center py-1.5 px-2">
+                        <Check
+                        className={cn(
+                            "mr-2 h-4 w-4 opacity-0"
+                        )}
+                        />
+                        <Skeleton className="mr-2 h-10 w-7 object-cover rounded" />
+                        <div>
+                        <Skeleton className="h-4 w-32 mb-1" />
+                        <Skeleton className="h-3 w-24" />
+                        <Skeleton className="h-3 w-20 mt-1" />
                         </div>
                     </div>
-                </PopoverContent>
+                    </div>
+                ))}
+                </>
+            ) : !!options && options.length > 0 ? (
+                options.filter((o) => o.volumeInfo?.title && o.volumeInfo?.authors).map((book) => (
+                <CommandItem key={book.id}>
+                    <BookResultCard book={book} />
+                </CommandItem>
+                ))
+            ) : (
+                <p className="p-4 text-center text-sm text-gray-500">
+                Keine Bücher gefunden.
+                </p>
             )}
-        </Popover>
-    );
+            </CommandList>
+        </Command>
+    )
 }

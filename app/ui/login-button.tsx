@@ -8,12 +8,13 @@ import {
 } from "@/components/ui/dialog"
 import LoginForm from "./login-form"
 import { Button } from "@/components/ui/button"
+import { PersonIcon } from "@radix-ui/react-icons"
 
 export default function LoginButton() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Anmelden</Button>
+        <Button><PersonIcon />Anmelden</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -1,16 +1,17 @@
 "use server";
 
-import { PrismaClient } from '@prisma/client'
+import { Book, PrismaClient } from '@prisma/client'
 import { AddBookFormSchema, AddBookFormState, BookItem } from '@/app/lib/definitions'
 import { verifySession } from '../lib/dal';
 
 const prisma = new PrismaClient()
 
-export async function addbook(state: AddBookFormState, formData: FormData) {
+export async function addbook(state: AddBookFormState, formData: FormData) : Promise<{ success: boolean, book?: Book, errors?: Record<string, string[]> }> {
     const session = await verifySession()
 
     if (!session) {
         return {
+            success: false,
             errors: {
                 bookId: ["Du bist nicht angemeldet. Bitte lade die seite neu und melde dich an."]
             }
@@ -30,6 +31,7 @@ export async function addbook(state: AddBookFormState, formData: FormData) {
 
     if (!validatedFields.success) {
         return {
+            success: false,
             errors: validatedFields.error.flatten().fieldErrors,
         }
     }
@@ -40,6 +42,7 @@ export async function addbook(state: AddBookFormState, formData: FormData) {
 
     if (!resposne.ok) {
         return {
+            success: false,
             errors: {
                 bookId: ["Fehler beim hinzufügen des Buches. Bitte versuche es später noch einmal."]
             }
@@ -50,16 +53,19 @@ export async function addbook(state: AddBookFormState, formData: FormData) {
 
     const book = await prisma.book.create({
         data: {
-            title: BookData.volumeInfo.title,
-            author: BookData.volumeInfo.authors.join(", "),
+            title: BookData.volumeInfo?.title ?? "unbekannter Titel",
+            author: BookData.volumeInfo?.authors?.join(", ") ?? "unbekannter Autor",
             wishlisted: isWishlisted,
-            pages: BookData.volumeInfo.pageCount,
+            pages: BookData.volumeInfo?.pageCount ?? 0,
             progress: pageProgress,
-            description: BookData.volumeInfo.description || null,
-            publicationYear: parseInt(BookData.volumeInfo.publishedDate.split("-")[0]),
-            thumbnail: BookData.volumeInfo.imageLinks.thumbnail,
+            description: BookData.volumeInfo?.description || null,
+            publicationYear: parseInt(BookData.volumeInfo?.publishedDate?.split("-")[0] ?? "0"),
+            thumbnail: BookData.volumeInfo?.imageLinks?.thumbnail ?? "https://books.google.com/googlebooks/images/no_cover_thumb.gif",
             googleBookId: BookData.id,
             userId: session.userId
+        },
+        include: {
+            user: true,
         }
     })
 

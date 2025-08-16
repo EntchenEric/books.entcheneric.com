@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Book, BookItem, User } from "../lib/definitions";
-import { CheckIcon, StarFilledIcon } from "@radix-ui/react-icons"
-
+import { CheckIcon, StarFilledIcon, TrashIcon, Pencil1Icon, StarIcon } from "@radix-ui/react-icons"
+import { ShoppingCart } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 import {
     Dialog,
@@ -104,8 +105,8 @@ function WishlistButton({ book, setBook }: { book: Book, setBook: React.Dispatch
     const [loading, setLoading] = useState(false);
 
     if (loading) return <Button disabled>Lädt...</Button>
-    if (book.wishlisted) return <Button onClick={() => changeWishlistStatus(book.id, false, setBook, setLoading)}>Als gekauft makieren</Button>
-    else return <Button onClick={() => changeWishlistStatus(book.id, true, setBook, setLoading)}>Auf die Wunschliste</Button>
+    if (book.wishlisted) return <Button onClick={() => changeWishlistStatus(book.id, false, setBook, setLoading)}><ShoppingCart /> Als gekauft makieren</Button>
+    else return <Button onClick={() => changeWishlistStatus(book.id, true, setBook, setLoading)}><StarIcon /> Auf die Wunschliste</Button>
 }
 
 function PageProgressInput({ book, setBook }: { book: Book, setBook: React.Dispatch<React.SetStateAction<Book | null>> }) {
@@ -143,18 +144,18 @@ function PageProgressInput({ book, setBook }: { book: Book, setBook: React.Dispa
 
     return (
         <div className="flex items-center gap-2">
-            <input
+            <Input
                 type="number"
                 min={0}
                 max={book.pages || 0}
                 value={progress}
                 onChange={(e) => setProgress(parseInt(e.target.value, 10) || 0)}
-                className="border rounded p-1 w-24"
+                className="border rounded p-1"
                 disabled={loading}
             />
             <span>/{book.pages}</span>
             <Button onClick={handleSave} disabled={loading || progress === book.progress}>
-                {loading ? "Speichern..." : "Speichern"}
+                {loading ? "Speichern..." : <><Pencil1Icon />Speichern</>}
             </Button>
         </div>
     );
@@ -186,7 +187,7 @@ function DeleteButton({ bookId, setBook }: { bookId: string, setBook: React.Disp
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="destructive" disabled={loading}>
-                    {loading ? "Löschen..." : "Löschen"}
+                    {loading ? "Löschen..." : <><TrashIcon />Löschen</>}
                 </Button>
             </DialogTrigger>
             <DialogContent>
@@ -221,7 +222,7 @@ export default function BookCard({ frontendBook, sessionUser }: { frontendBook: 
             <DialogTrigger asChild>
                 <div className="max-w-xs w-full font-sans rounded-lg bg-white shadow-lg overflow-hidden flex flex-col group transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 cursor-pointer">
                     <div className="relative">
-                        <img src={book.thumbnail} alt={`${book.title} Cover`} className="w-full h-40 object-cover" />
+                        <img src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`} alt={`${book.title} Cover`} className="w-full h-40 object-cover" />
                         <div className="absolute top-2 right-2 flex flex-col items-end gap-2">
                             {progressPercentage >= 100 && (
                                 <span className="flex items-center gap-1 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
@@ -269,7 +270,7 @@ export default function BookCard({ frontendBook, sessionUser }: { frontendBook: 
 
             <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0 w-3xl">
                 <div className="flex flex-col sm:flex-row">
-                    <img src={book.thumbnail} alt={`${book.title} Cover`} className="w-full sm:w-1/3 h-64 sm:h-auto object-cover" />
+                    <img src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`} alt={`${book.title} Cover`} className="w-full sm:w-1/3 h-64 sm:h-auto object-cover" />
                     <div className="p-6 flex-1">
                         <DialogHeader>
                             <DialogTitle className="text-3xl font-bold mb-1">{book.title}</DialogTitle>
@@ -294,7 +295,7 @@ export default function BookCard({ frontendBook, sessionUser }: { frontendBook: 
                         </a>
                         {
                             ownPage &&
-                            <div className="mt-6 pt-4 border-t grid gap-2 grid-cols-1 sm:grid-cols-2">
+                            <div className="mt-6 pt-4 border-t grid gap-2 grid-cols-1">
                                 <WishlistButton book={book} setBook={setBook} />
                                 <PageProgressInput book={book} setBook={setBook} />
                                 <DeleteButton bookId={book.id} setBook={setBook} />

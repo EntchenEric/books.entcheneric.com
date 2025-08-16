@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { User as DbUser } from '@prisma/client'
 
 export const SignupFormSchema = z.object({
   name: z
@@ -75,6 +76,8 @@ export type Session = {
 
 export type ImageLinks = {
   smallThumbnail: string;
+  medium: string;
+  large: string;
   thumbnail: string;
 }
 
@@ -98,15 +101,15 @@ export type RetailPrice = {
 }
 
 export type VolumeInfo = {
-  title: string;
-  authors: string[];
-  publisher: string;
-  publishedDate: string;
+  title?: string;
+  authors?: string[];
+  publisher?: string;
+  publishedDate?: string;
   description?: string;
-  pageCount: number;
-  imageLinks: ImageLinks;
-  language: string;
-  industryIdentifiers: IndustryIdentifier[]
+  pageCount?: number;
+  imageLinks?: ImageLinks;
+  language?: string;
+  industryIdentifiers?: IndustryIdentifier[]
 }
 
 export type IndustryIdentifier = {
@@ -126,3 +129,5 @@ export type GoogleBooksApiResponse = {
   totalItems: number;
   items: BookItem[];
 }
+
+export type UserWithBooks = DbUser & { books: Book[] };

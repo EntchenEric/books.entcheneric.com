@@ -17,7 +17,7 @@ model Book {
   id         String   @id @default(uuid())
   title      String   @db.VarChar(256)
   author     String   @db.VarChar(256)
-  description String? @db.VarChar(2048)
+  description String? @db.VarChar(4192)
   publicationYear Int 
   wishlisted Boolean  @default(true)
   pages      Int
@@ -34,5 +34,8 @@ model User {
   id           String @id @default(ulid())
   url          String @unique
   passwordHash String @db.VarChar(256)
+  title         String? @db.VarChar(256)
+  description   String? @db.VarChar(4192)
+
   books        Book[]
 }
