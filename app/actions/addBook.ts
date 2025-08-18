@@ -72,6 +72,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
                 publicationYear: parseInt(BookData.volumeInfo?.publishedDate?.split("-")[0] ?? "0"),
                 thumbnail: BookData.volumeInfo?.imageLinks?.thumbnail ?? "https://books.google.com/googlebooks/images/no_cover_thumb.gif",
                 googleBookId: BookData.id,
+                ISBNumber: BookData.volumeInfo?.industryIdentifiers?.find(id => id.type === "ISBN_13")?.identifier ?? null,
                 userId: session.userId
             },
             include: {
@@ -88,7 +89,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
         method: 'POST',
         body: JSON.stringify({
             query: BookData.volumeInfo?.title?.slice(0, Math.floor(BookData.volumeInfo.title.length * 0.7)),
-            userId: session.userId
+            userId: session.userId,
         })
     });
 
@@ -163,11 +164,12 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
             author: item.volumeInfo?.authors?.join(", ") ?? "unbekannter Autor",
             wishlisted: isWishlisted,
             pages: item.volumeInfo?.pageCount ?? 0,
-            progress: markAllAsFinished? item.volumeInfo?.pageCount ?? 0 : 0,
+            progress: markAllAsFinished ? item.volumeInfo?.pageCount ?? 0 : 0,
             description: item.volumeInfo?.description || null,
             publicationYear: parseInt(item.volumeInfo?.publishedDate?.split("-")[0] ?? "0"),
             thumbnail: item.volumeInfo?.imageLinks?.thumbnail ?? "https://books.google.com/googlebooks/images/no_cover_thumb.gif",
             googleBookId: item.id,
+            ISBNumber: item.volumeInfo?.industryIdentifiers?.find(id => id.type === "ISBN_13")?.identifier ?? null,
             userId: session.userId
         }))
     })

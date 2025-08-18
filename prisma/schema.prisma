@@ -23,6 +23,7 @@ model Book {
   pages      Int
   progress   Int      @default(0)
   thumbnail  String   @db.VarChar(512)
+  ISBNumber  String? @db.VarChar(13)
 
   googleBookId String
 

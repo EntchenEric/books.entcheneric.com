@@ -132,51 +132,51 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
     return (
         <Command>
             <div className="relative">
-            <Input
-                placeholder="Suche ein Buch..."
-                value={inputValue}
-                onChange={(e) => {
-                setInputValue(e.target.value);
-                if (selectedBook) {
-                    setSelectedBook(null);
-                }
-                }}
-                className="pl-10"
-            />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                <Input
+                    placeholder="Suche ein Buch..."
+                    value={inputValue}
+                    onChange={(e) => {
+                        setInputValue(e.target.value);
+                        if (selectedBook) {
+                            setSelectedBook(null);
+                        }
+                    }}
+                    className="pl-10"
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
             </div>
             <CommandList>
-            {isLoading ? (
-                <>
-                {Array.from({ length: 10 }).map((_, i) => (
-                    <div key={i}>
-                    <div className="relative flex w-full items-center py-1.5 px-2">
-                        <Check
-                        className={cn(
-                            "mr-2 h-4 w-4 opacity-0"
-                        )}
-                        />
-                        <Skeleton className="mr-2 h-10 w-7 object-cover rounded" />
-                        <div>
-                        <Skeleton className="h-4 w-32 mb-1" />
-                        <Skeleton className="h-3 w-24" />
-                        <Skeleton className="h-3 w-20 mt-1" />
-                        </div>
-                    </div>
-                    </div>
-                ))}
-                </>
-            ) : !!options && options.length > 0 ? (
-                options.filter((o) => o.volumeInfo?.title && o.volumeInfo?.authors).map((book) => (
-                <CommandItem key={book.id}>
-                    <BookResultCard book={book} />
-                </CommandItem>
-                ))
-            ) : (
-                <p className="p-4 text-center text-sm text-gray-500">
-                Keine Bücher gefunden.
-                </p>
-            )}
+                {isLoading ? (
+                    <>
+                        {Array.from({ length: 10 }).map((_, i) => (
+                            <div key={i}>
+                                <div className="relative flex w-full items-center py-1.5 px-2">
+                                    <Check
+                                        className={cn(
+                                            "mr-2 h-4 w-4 opacity-0"
+                                        )}
+                                    />
+                                    <Skeleton className="mr-2 h-10 w-7 object-cover rounded" />
+                                    <div>
+                                        <Skeleton className="h-4 w-32 mb-1" />
+                                        <Skeleton className="h-3 w-24" />
+                                        <Skeleton className="h-3 w-20 mt-1" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </>
+                ) : !!options && options.length > 0 ? (
+                    options.filter((o) => o.volumeInfo?.title && o.volumeInfo?.authors).map((book, index) => (
+                        <CommandItem key={index}>
+                            <BookResultCard book={book} />
+                        </CommandItem>
+                    ))
+                ) : (
+                    <p className="p-4 text-center text-sm text-gray-500">
+                        Keine Bücher gefunden.
+                    </p>
+                )}
             </CommandList>
         </Command>
     )

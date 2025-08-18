@@ -59,6 +59,7 @@ export type Book = {
   progress: number,
   thumbnail: string,
   googleBookId: string,
+  ISBNumber?: string | null,
   user: User
 }
 

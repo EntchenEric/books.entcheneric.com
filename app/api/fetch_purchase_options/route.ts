@@ -16,7 +16,7 @@ const updatePurchaseOptions = async (book: Book) => {
             bookId: book.id
         }
     })
-    const result = await fetch(`https://serpapi.com/search?q=${book.title}&hl=de&gl=de&api_key=${process.env.SERP_API_KEY}`, {
+    const result = await fetch(`https://serpapi.com/search?q=${book.ISBNumber ||book.title}&hl=de&gl=de&api_key=${process.env.SERP_API_KEY}`, {
         method: 'GET'
     })
     if (result.ok) {
