@@ -131,3 +131,9 @@ export type GoogleBooksApiResponse = {
 }
 
 export type UserWithBooks = DbUser & { books: Book[] };
+
+export type PurchaseOption = {
+    storeName: string;
+    price: string;
+    url: string;
+};

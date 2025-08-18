@@ -1,5 +1,3 @@
-// src/components/add-book-form.tsx
-
 "use client"
 
 import { useActionState, useEffect, useRef, useState } from "react";

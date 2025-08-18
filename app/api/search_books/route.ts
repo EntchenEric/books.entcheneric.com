@@ -10,12 +10,10 @@ export async function POST(request: NextRequest) {
         const body = await request.json()
         const userId = body.userId;
 
-        // Fetch user and their book IDs from your database
         const user = await prisma.user.findUnique({
             where: {
                 id: userId
             },
-            // Using `select` is slightly more precise here than `include`
             select: {
                 books: {
                     select: {
@@ -25,8 +23,6 @@ export async function POST(request: NextRequest) {
             }
         });
 
-        // 1. Create a Set of the user's existing book IDs for efficient lookup ✅
-        // A Set provides O(1) average time complexity for checking existence (.has()), which is faster than an array's .includes().
         const userBookIds = new Set(user?.books.map(book => book.googleBookId) || []);
 
         const apiKey = process.env.GOOGLE_API_KEY;
@@ -47,18 +43,14 @@ export async function POST(request: NextRequest) {
 
         const data: GoogleBooksApiResponse = await response.json();
 
-        // Ensure data.items exists before trying to filter it
         if (!data.items) {
              return NextResponse.json({ kind: data.kind, totalItems: 0, items: [] });
         }
 
-        // 2. Filter the Google Books API results 💡
-        // Keep only the books where the book's `id` is NOT in our `userBookIds` Set.
         const filteredBooks = data.items.filter(book => !userBookIds.has(book.id));
 
-        // 3. Construct the new response object with the filtered books
         const filteredResponse = {
-            ...data, // Copy other properties like 'kind'
+            ...data,
             totalItems: filteredBooks.length,
             items: filteredBooks,
         };
@@ -66,7 +58,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(filteredResponse);
 
     } catch (error) {
-        console.error(error); // It's good practice to log the actual error on the server
+        console.error(error);
         return NextResponse.json({ message: "Internal server error" }, { status: 500 })
     }
 }

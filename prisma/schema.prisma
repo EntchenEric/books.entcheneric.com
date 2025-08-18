@@ -28,6 +28,8 @@ model Book {
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purchaseOptions PurchaseOptionCache[]
+  lastPurchaseOptionUpdatedAt DateTime @default(dbgenerated("'1970-01-01 00:00:00'"))
 }
 
 model User {
@@ -38,4 +40,14 @@ model User {
   description   String? @db.VarChar(4192)
 
   books        Book[]
+}
+
+model PurchaseOptionCache {
+  id  String @id @default(uuid())
+  bookId String
+  Book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  retailerName String @db.VarChar(256)
+  price Decimal @db.Decimal(10, 2)
+  url String @db.VarChar(512)
 }

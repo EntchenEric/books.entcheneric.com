@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Book, BookItem, User } from "../lib/definitions";
+import { Book, User } from "../lib/definitions";
 import { CheckIcon, StarFilledIcon, TrashIcon, Pencil1Icon, StarIcon } from "@radix-ui/react-icons"
 import { ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
+import PurchaseOptionsFetcher from "./purchaseOptionFetcher";
 import {
     Dialog,
     DialogContent,
@@ -13,70 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner"
-
-type PurchaseOption = {
-    storeName: string;
-    price: string;
-    url: string;
-};
-
-async function fetchPurchaseOptions(googleBookId: string): Promise<PurchaseOption[]> {
-    const googleBookApiResult = await fetch('https://www.googleapis.com/books/v1/volumes/' + googleBookId);
-    if (!googleBookApiResult.ok) {
-        throw new Error("Failed to fetch book data");
-    }
-
-    const data: BookItem = await googleBookApiResult.json();
-
-    const purchaseOptions: PurchaseOption[] = [];
-    if (data.saleInfo.buyLink && data.saleInfo.retailPrice?.amount) {
-        purchaseOptions.push({
-            storeName: "google play",
-            price: data.saleInfo.retailPrice?.amount.toString(),
-            url: data.saleInfo.buyLink
-        })
-    }
-
-
-
-    return purchaseOptions
-}
-
-function PurchaseOptionsFetcher({ book }: { book: Book }) {
-    const [options, setOptions] = useState<PurchaseOption[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (book.wishlisted) {
-            setIsLoading(true);
-            fetchPurchaseOptions(book.title)
-                .then(setOptions)
-                .catch(() => setError("Kaufoptionen konnten nicht geladen werden."))
-                .finally(() => setIsLoading(false));
-        }
-    }, [book.title, book.wishlisted]);
-
-    if (!book.wishlisted) return null;
-
-    return (
-        <div className="mt-6">
-            <h4 className="font-semibold text-gray-800 mb-3">Kaufoptionen</h4>
-            {isLoading && <div className="text-sm text-gray-500">Suche Preise...</div>}
-            {error && <div className="text-sm text-red-500">{error}</div>}
-            {!isLoading && !error && (
-                <div className="space-y-2">
-                    {options.map((opt) => (
-                        <a href={opt.url} key={opt.storeName} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-2 rounded-md transition-colors">
-                            <span className="text-gray-700">{opt.storeName}</span>
-                            <span className="font-bold text-blue-600">{opt.price}</span>
-                        </a>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-}
 
 const changeWishlistStatus = (bookId: string, wishlistStatus: boolean, setBook: React.Dispatch<React.SetStateAction<Book | null>>, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
     setLoading(true);
@@ -285,7 +221,7 @@ export default function BookCard({ frontendBook, sessionUser }: { frontendBook: 
                                 dangerouslySetInnerHTML={{ __html: book.description || "Keine Beschreibung verfügbar." }}
                             />
                         </div>
-                        {/*<PurchaseOptionsFetcher book={book} />*/}
+                        <PurchaseOptionsFetcher book={book} />
                         <a
                             href={`https://books.google.de/books?id=${book.googleBookId}&pg=PT8&hl=de`}
                             className="text-blue-600 hover:underline"
