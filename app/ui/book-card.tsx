@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Book, User } from "../lib/definitions";
+import { Book, Session } from "../lib/definitions";
 import { CheckIcon, StarFilledIcon, TrashIcon, Pencil1Icon, StarIcon } from "@radix-ui/react-icons"
 import { ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -139,15 +139,13 @@ function DeleteButton({ bookId, setBook }: { bookId: string, setBook: React.Disp
         </Dialog>
     );
 }
-export default function BookCard({ frontendBook, sessionUser }: { frontendBook: Book, sessionUser: User | null }) {
+export default function BookCard({ frontendBook, isOwner }: { frontendBook: Book, isOwner: boolean }) {
     const [book, setBook] = useState<Book | null>(frontendBook)
 
     const progressPercentage =
         book?.progress != null && book?.pages != null && book?.pages > 0
             ? (book.progress / book.pages) * 100
             : 0;
-
-    const ownPage = sessionUser?.url === book?.user.url;
 
     if (!book) {
         return <></>
@@ -230,7 +228,7 @@ export default function BookCard({ frontendBook, sessionUser }: { frontendBook: 
                             Leseprobe
                         </a>
                         {
-                            ownPage &&
+                            isOwner &&
                             <div className="mt-6 pt-4 border-t grid gap-2 grid-cols-1">
                                 <WishlistButton book={book} setBook={setBook} />
                                 <PageProgressInput book={book} setBook={setBook} />

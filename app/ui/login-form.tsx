@@ -48,8 +48,8 @@ export default function LoginForm() {
                     <AlertTitle>Das Passwort ist ungültig</AlertTitle>
                     <AlertDescription>
                         <ul className="list-disc pl-5">
-                            {state.errors.password.map((error) => (
-                                <li key={error} className="text-xs">{error}</li>
+                            {state.errors.password.map((error, index) => (
+                                <li className="text-xs">{error}</li>
                             ))}
                         </ul>
                     </AlertDescription>

@@ -317,7 +317,7 @@ export default function ProfilePage({
                 ) : (
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {filteredAndSortedBooks.map((book) => (
-                            <BookCard frontendBook={book} key={book.id} sessionUser={dbUser} />
+                            <BookCard frontendBook={book} key={book.id} isOwner={isOwner} />
                         ))}
                     </div>
                 )}

@@ -100,7 +100,7 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
                     className="mr-2 h-10 w-7 object-cover rounded"
                 />
             ) : <img
-                src={'https://no-image-found.entcheneric.com/image?width=128&height=181'}
+                src={'https://books.google.com/googlebooks/images/no_cover_thumb.gif'}
                 className="mr-2 h-10 w-7 object-cover rounded"
             />}
             <div className="flex flex-col min-w-0">

@@ -77,7 +77,7 @@ export default function AddBookButton({ addBook, userId }: { addBook: (book: Boo
 
                         <div className="flex items-start gap-4 rounded-md border bg-muted/20 p-4">
                             <img
-                                src={selectedBook.volumeInfo.imageLinks?.thumbnail ?? '/placeholder.svg'}
+                                src={selectedBook.volumeInfo.imageLinks?.thumbnail ?? 'https://books.google.com/googlebooks/images/no_cover_thumb.gif'}
                                 alt={`Cover of ${selectedBook.volumeInfo.title}`}
                                 className="h-28 w-auto rounded-sm shadow-md"
                             />

@@ -9,7 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Info } from "lucide-react";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 function SubmitButton({ pending }: { pending: boolean }) {
     return (
@@ -29,14 +35,18 @@ function SubmitButton({ pending }: { pending: boolean }) {
 export default function AddBookForm({ book, addBook, setKeepOpen }: { book: BookItem; addBook: (book: Book) => void; setKeepOpen: (keepOpen: boolean) => void; }) {
     const [state, formAction, pending] = useActionState(apiAddBook, undefined);
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const [addSeries, setAddSeries] = useState(false);
+    const [markAllAsFinished, setMarkAllAsFinished] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
         if (!pending && state) {
             toast.dismiss();
-            if (state.success && state.book) {
+            if (state.success && state.books) {
                 toast.success("Buch erfolgreich hinzugefügt!");
-                addBook(state.book as any);
+                state.books.forEach((book) => {
+                    addBook(book as any);
+                })
                 formRef.current?.reset();
                 setIsWishlisted(false);
             } else if (state.errors) {
@@ -72,7 +82,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: { book: Book
                         min={0}
                         max={book.volumeInfo.pageCount}
                         className="w-24"
-                        disabled={isWishlisted}
+                        disabled={isWishlisted || addSeries}
                     />
                     <span className="text-sm text-muted-foreground">
                         / {book.volumeInfo.pageCount ?? '?'} Seiten
@@ -87,6 +97,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: { book: Book
                     <Checkbox
                         id="isWishlisted"
                         checked={isWishlisted}
+                        disabled={markAllAsFinished}
                         onCheckedChange={(checked) => {
                             const isChecked = checked === true;
                             setIsWishlisted(isChecked);
@@ -101,6 +112,55 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: { book: Book
                         Auf meine Wunschliste setzen
                     </Label>
                 </div>
+
+                <div className="flex items-center gap-3">
+                    <Checkbox
+                        id="addSeries"
+                        checked={addSeries}
+                        onCheckedChange={(checked) => {
+                            const isChecked = checked === true;
+                            setAddSeries(isChecked);
+                            if (isChecked && formRef.current) {
+                                const pageInput = formRef.current.elements.namedItem("pageProgress") as HTMLInputElement;
+                                if (pageInput) pageInput.value = '0';
+                            }
+                        }}
+                    />
+                    <input type="hidden" name="addSeries" value={String(addSeries)} />
+                    <Label htmlFor="addSeries" className="cursor-pointer text-sm font-normal">
+                        Gesammte Buchserie hinzufügen
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Info className="w-4 text-muted-foreground"/>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p className="text-sm">
+                                    Es können unter umständen nicht alle Bücher hinzugefügt werden. <br /> Bitte überprüfe die Liste der hinzugefügten Bücher nach dem Hinzufügen.
+                                </p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </Label>
+                </div>
+
+                {
+                    addSeries && <div className="flex items-center gap-3">
+                        <Checkbox
+                            id="markAllAsFinished"
+                            checked={markAllAsFinished}
+                            onCheckedChange={(checked) => {
+                                const isChecked = checked === true;
+                                setAddSeries(isChecked);
+                                if (isChecked && formRef.current) {
+                                    const pageInput = formRef.current.elements.namedItem("pageProgress") as HTMLInputElement;
+                                    if (pageInput) pageInput.value = '0';
+                                }
+                            }}
+                        />
+                        <input type="hidden" name="markAllAsFinished" value={String(markAllAsFinished)} />
+                        <Label htmlFor="markAllAsFinished" className="cursor-pointer text-sm font-normal">
+                            Alle als gelesen markieren
+                        </Label>
+                    </div>}
 
                 <div className="flex items-center gap-3">
                     <Checkbox

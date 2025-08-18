@@ -3,11 +3,11 @@ import { Book, PurchaseOption, BookItem } from '../lib/definitions';
 import { PurchaseOptionCache } from '@prisma/client';
 
 function formatCurrency(number: number): string {
-  const formatter = new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR'
-  });
-  return formatter.format(number);
+    const formatter = new Intl.NumberFormat('de-DE', {
+        style: 'currency',
+        currency: 'EUR'
+    });
+    return formatter.format(number);
 }
 
 
@@ -25,7 +25,7 @@ async function fetchSerpPurchaseOptions(bookId: string): Promise<PurchaseOption[
             price: formatCurrency(Number(item.price)),
             url: item.url
         }));
-    } 
+    }
 }
 
 async function fetchPurchaseOptions(googleBookId: string, bookId: string): Promise<PurchaseOption[]> {
@@ -81,14 +81,20 @@ export default function PurchaseOptionsFetcher({ book }: { book: Book }) {
             {isLoading && <div className="text-sm text-gray-500">Suche Preise...</div>}
             {error && <div className="text-sm text-red-500">{error}</div>}
             {!isLoading && !error && (
-                <div className="space-y-2">
-                    {options.map((opt) => (
-                        <a href={opt.url} key={opt.storeName} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-2 rounded-md transition-colors">
-                            <span className="text-gray-700">{opt.storeName}</span>
-                            <span className="font-bold text-blue-600">{opt.price}</span>
-                        </a>
-                    ))}
-                </div>
+                <>
+                    {
+                        options.length === 0 && (<div className="text-sm text-gray-500">Keine Kaufoptionen gefunden.</div>
+                        )
+                    }
+                    <div className="space-y-2">
+                        {options.map((opt) => (
+                            <a href={opt.url} key={opt.storeName} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-2 rounded-md transition-colors">
+                                <span className="text-gray-700">{opt.storeName}</span>
+                                <span className="font-bold text-blue-600">{opt.price}</span>
+                            </a>
+                        ))}
+                    </div>
+                </>
             )}
         </div>
     );
