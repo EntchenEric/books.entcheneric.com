@@ -49,7 +49,6 @@ export type SessionPayload = {
 
 export type Book = {
   id: string,
-  name: string,
   title: string,
   author: string,
   description: string | null,

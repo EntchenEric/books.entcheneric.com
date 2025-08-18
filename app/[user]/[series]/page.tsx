@@ -11,32 +11,29 @@ import { Skeleton } from "@/components/ui/skeleton"
 import LoginButton from "@/app/ui/login-button"
 import LogoutButton from "@/app/ui/logout-button"
 import AddBookButton from "@/app/ui/add-book-button"
-import BookCard, { BookCardComponent } from "@/app/ui/book-card"
+import BookCard from "@/app/ui/book-card"
 import {
     Search, AlertTriangle, BookOpenCheck, Library, LibraryBig, SlidersHorizontal,
     ArrowUpDown, Heart, BookCheck, Book as BookIcon,
-    Pencil, Check, X
+    Pencil, Check, X, MoveLeft
 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
-
-type BooksInSeries = {
-    name: string;
-    books: Book[];
-}
+import { redirect } from "next/dist/server/api-utils"
 
 export default function ProfilePage({
     params,
 }: {
-    params: Promise<{ user: string }>
+    params: Promise<{ user: string, series: string }>;
 }) {
+    const [series, setSeries] = useState<string>("");
     const [dbUser, setDbUser] = useState<UserWithBooks | null>(null);
     const [loading, setLoading] = useState(true);
     const [session, setSession] = useState<Session | null>(null);
     const [hasError, setHasError] = useState(false);
     const [reloadUser, setReloadUser] = useState(0);
     const [filter, setFilter] = useState("");
-    const [sort, setSort] = useState("title-asc");
+    const [sort, setSort] = useState("date-asc");
     const [wishlistStatus, setWishlistStatus] = useState("all");
     const [finishedStatus, setFinishedStatus] = useState("all");
     const [filteredAndSortedBooks, setFilteredAndSortedBooks] = useState<Book[]>([]);
@@ -44,7 +41,6 @@ export default function ProfilePage({
     const [editableTitle, setEditableTitle] = useState("");
     const [editableDescription, setEditableDescription] = useState("");
     const [titleReloading, setTitleReloading] = useState(false);
-    const [booksInSeries, setBooksInSeries] = useState<BooksInSeries[]>([]);
 
     const isOwner = !!session && !!dbUser && session.userId === dbUser.id;
 
@@ -54,6 +50,7 @@ export default function ProfilePage({
 
     useEffect(() => {
         params.then((p) => {
+            setSeries(p.series.replaceAll("%20", " "));
             fetch('/api/get_user', {
                 method: "POST",
                 body: JSON.stringify({ url: p.user })
@@ -64,7 +61,6 @@ export default function ProfilePage({
                     } else {
                         const userData = await res.json();
                         setDbUser(userData);
-                        findAndSetBookSeries(userData?.books, setBooksInSeries);
                         setFilteredAndSortedBooks(userData?.books || []);
                         setEditableTitle(userData.title || `${userData.url}'s Library`);
                         setEditableDescription(userData.description || "A great collection of books.");
@@ -78,124 +74,37 @@ export default function ProfilePage({
         verifySession().then(setSession);
     }, [params, reloadUser]);
 
-    const findAndSetBookSeries = (
-        allBooks: Book[],
-        setBooksInSeries: React.Dispatch<React.SetStateAction<BooksInSeries[]>>
-    ) => {
-        if (!allBooks || allBooks.length === 0) {
-            setBooksInSeries([]);
-            return;
-        }
-
-        const seriesMap = allBooks.reduce((acc, book) => {
-            const baseTitle = book.title.replace(/\s+(?:Vol\.?|#)?\d+$/i, '').trim();
-            const seriesKey = `${book.author.toLowerCase()}-${baseTitle.toLowerCase()}`;
-
-            if (!acc[seriesKey]) {
-                acc[seriesKey] = [];
-            }
-            acc[seriesKey].push(book);
-            return acc;
-        }, {} as Record<string, Book[]>);
-
-        const foundSeries = Object.values(seriesMap)
-            .filter(group => group.length > 1)
-            .map((group): BooksInSeries => {
-                group.sort((a, b) => {
-                    const numA = parseInt(a.title.match(/\d+$/)?.[0] || '0');
-                    const numB = parseInt(b.title.match(/\d+$/)?.[0] || '0');
-                    return numA - numB;
-                });
-
-                const baseTitle = group[0].title.replace(/\s+(?:Vol\.?|#)?\d+$/i, '').trim();
-
-                return {
-                    name: baseTitle,
-                    books: group,
-                };
-            });
-
-        setBooksInSeries(foundSeries);
-    };
-
     useEffect(() => {
-        if (!dbUser?.books) {
-            setFilteredAndSortedBooks([]);
-            return;
-        }
-
-        const seriesMap = dbUser.books.reduce((acc, book) => {
-            const baseTitle = book.title.replace(/\s+(?:Vol\.?|#)?\d+$/i, '').trim();
-            const seriesKey = `${book.author.toLowerCase()}-${baseTitle.toLowerCase()}`;
-            if (!acc[seriesKey]) {
-                acc[seriesKey] = [];
-            }
-            acc[seriesKey].push(book);
-            return acc;
-        }, {} as Record<string, Book[]>);
-
-        let combinedItems: Book[] = Object.values(seriesMap).flatMap(group => {
-            if (group.length > 1) {
-                group.sort((a, b) => {
-                    const numA = parseInt(a.title.match(/\d+$/)?.[0] || '0');
-                    const numB = parseInt(b.title.match(/\d+$/)?.[0] || '0');
-                    return numA - numB;
-                });
-
-                const firstBook = group[0];
-                const baseTitle = firstBook.title.replace(/\s+(?:Vol\.?|#)?\d+$/i, '').trim();
-
-                const seriesObject: Book = {
-                    id: `series-${baseTitle.replace(/\s/g, '-')}`,
-                    title: baseTitle,
-                    author: firstBook.author,
-                    description: `A series containing ${group.length} books. The first book is "${firstBook.title}".`,
-                    publicationYear: firstBook.publicationYear,
-                    wishlisted: group.some(book => book.wishlisted),
-                    pages: group.reduce((sum, book) => sum + book.pages, 0),
-                    progress: group.reduce((sum, book) => sum + book.progress, 0),
-                    thumbnail: firstBook.thumbnail,
-                    googleBookId: firstBook.googleBookId,
-                    ISBNumber: "SERIES",
-                    user: firstBook.user,
-                };
-                return [seriesObject];
-            } else {
-                return group;
-            }
-        });
+        if (!dbUser?.books) return;
+        let books = [...dbUser.books].filter(book => book.title.toLowerCase().includes(series.toLowerCase()));
 
         if (filter) {
-            combinedItems = combinedItems.filter(item =>
-                item.title.toLowerCase().includes(filter.toLowerCase()) ||
-                item.author.toLowerCase().includes(filter.toLowerCase())
+            books = books.filter(book =>
+                book.title.toLowerCase().includes(filter.toLowerCase()) ||
+                book.author.toLowerCase().includes(filter.toLowerCase())
             );
         }
         if (wishlistStatus === 'wishlisted') {
-            combinedItems = combinedItems.filter(item => item.wishlisted);
+            books = books.filter(book => book.wishlisted);
         } else if (wishlistStatus === 'not-wishlisted') {
-            combinedItems = combinedItems.filter(item => !item.wishlisted);
+            books = books.filter(book => !book.wishlisted);
         }
         if (finishedStatus === 'finished') {
-            combinedItems = combinedItems.filter(item => item.progress >= item.pages && item.pages > 0);
+            books = books.filter(book => book.progress >= book.pages);
         } else if (finishedStatus === 'not-finished') {
-            combinedItems = combinedItems.filter(item => item.progress < item.pages);
+            books = books.filter(book => book.progress < book.pages);
         }
 
-        combinedItems.sort((a, b) => {
+        books.sort((a, b) => {
             switch (sort) {
                 case "title-asc": return a.title.localeCompare(b.title);
                 case "title-desc": return b.title.localeCompare(a.title);
-                case "date-asc": return new Date(a.publicationYear).getTime() - new Date(b.publicationYear).getTime();
+                case "date-asc": default: return new Date(a.publicationYear).getTime() - new Date(b.publicationYear).getTime();
                 case "date-desc": return new Date(b.publicationYear).getTime() - new Date(a.publicationYear).getTime();
-                default: return 0;
             }
         });
-
-        setFilteredAndSortedBooks(combinedItems);
-
-    }, [dbUser, filter, sort, wishlistStatus, finishedStatus]);
-
+        setFilteredAndSortedBooks(books);
+    }, [series, dbUser, filter, sort, wishlistStatus, finishedStatus]);
 
     const updateUser = ({ title, description }: { title?: string, description?: string }) => {
         const id = toast.loading("Updating details...");
@@ -278,31 +187,15 @@ export default function ProfilePage({
                     <div className="flex w-full items-start gap-4">
                         <LibraryBig className="h-12 w-12 text-primary flex-shrink-0" />
                         <div className="flex-grow">
-                            {isEditing ? (
-                                <div className="flex flex-col gap-2">
-                                    <Input
-                                        value={editableTitle}
-                                        onChange={(e) => setEditableTitle(e.target.value)}
-                                        placeholder="Your Library Title"
-                                        className="h-auto scroll-m-20 border-x-0 border-t-0 border-b-2 border-primary/50 bg-transparent p-0 text-4xl font-extrabold tracking-tight shadow-none focus-visible:ring-0 lg:text-5xl"
-                                    />
-                                    <Input
-                                        value={editableDescription}
-                                        onChange={(e) => setEditableDescription(e.target.value)}
-                                        placeholder="A short description..."
-                                        className="mt-1 h-auto border-x-0 border-t-0 border-b-2 border-primary/50 bg-transparent p-0 text-muted-foreground shadow-none focus-visible:ring-0"
-                                    />
-                                </div>
-                            ) : (
-                                <div>
-                                    <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                                        {dbUser.title || `${dbUser.url}'s Library`}
-                                    </h1>
-                                    <p className="mt-1 text-muted-foreground">
-                                        {dbUser.description || "A great collection of books."}
-                                    </p>
-                                </div>
-                            )}
+
+                            <div>
+                                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                                    {series}
+                                </h1>
+                                <p className="mt-1 text-muted-foreground">
+                                    Alle Bücher aus der Reihe "{series}" von {dbUser.url}
+                                </p>
+                            </div>
                         </div>
 
                         {isOwner && (
@@ -387,6 +280,13 @@ export default function ProfilePage({
                 </CardContent>
             </Card>
 
+            <a href={"/" + dbUser.url} className="mb-4 inline-flex items-center text-sm font-medium text-primary hover:underline">
+                <Button variant="outline" size="sm" className="mb-4">
+                    <MoveLeft className="mr-2 h-4 w-4" />
+                    Zurück zur gesammten Bibliothek
+                </Button>
+            </a>
+
             <div>
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="flex items-center gap-3 text-2xl font-semibold tracking-tight">
@@ -410,18 +310,7 @@ export default function ProfilePage({
                 ) : (
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {filteredAndSortedBooks.map((book) => (
-                            <>
-                                {book.ISBNumber === "SERIES" ? (
-                                    <a href={`${dbUser.url}/${book.title}`} key={book.id} className="group">
-                                        <BookCardComponent book={book} key={book.id} progressPercentage={book?.progress != null && book?.pages != null && book?.pages > 0
-                                            ? (book.progress / book.pages) * 100
-                                            : 0} />
-                                    </a>
-                                ) : (
-                                    <BookCard frontendBook={book} key={book.id} isOwner={isOwner} />
-
-                                )}
-                            </>
+                            <BookCard frontendBook={book} key={book.id} isOwner={isOwner} />
                         ))}
                     </div>
                 )}

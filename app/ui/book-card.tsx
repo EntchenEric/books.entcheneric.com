@@ -139,6 +139,56 @@ function DeleteButton({ bookId, setBook }: { bookId: string, setBook: React.Disp
         </Dialog>
     );
 }
+
+export function BookCardComponent({ book, progressPercentage }: { book: Book, progressPercentage: number }) {
+    return <div className="max-w-xs w-full font-sans rounded-lg bg-white shadow-lg overflow-hidden flex flex-col group transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 cursor-pointer">
+        <div className="relative">
+            <img src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`} alt={`${book.title} Cover`} className="w-full h-40 object-cover" />
+            <div className="absolute top-2 right-2 flex flex-col items-end gap-2">
+                {progressPercentage >= 100 && (
+                    <span className="flex items-center gap-1 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                        <CheckIcon />
+                        Gelesen
+                    </span>
+                )}
+                {book.wishlisted && (
+                    <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex"><StarFilledIcon />Wunschliste</span>
+                )}
+            </div>
+        </div>
+        <div className="p-4 flex flex-col flex-grow">
+            <h3 className="text-xl font-bold text-gray-800 truncate group-hover:text-blue-600 transition-colors">{book.title}</h3>
+            {book.author && (<p className="text-sm text-gray-500 mb-4">{book.author}</p>)}
+            <div className="flex-grow" />
+            <div className="mt-2 h-10 flex flex-col justify-end">
+                {progressPercentage >= 100 ? (
+                    <div className="bg-green-100 rounded-lg p-2 text-center">
+                        <span className="font-bold text-sm text-green-700">Abgeschlossen! 🎉</span>
+                    </div>
+                ) : progressPercentage > 0 ? (
+                    <div>
+                        <div className="flex justify-between text-xs text-gray-500">
+                            <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
+                        </div>
+                        <div className="flex justify-between mb-1">
+                            <span className="text-xs font-medium text-gray-600">Fortschritt</span>
+                            <span className="text-xs font-medium text-gray-600">{book.progress}/{book.pages} Seiten</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex justify-between text-xs text-gray-500">
+                        <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
+                        <span>{book.pages ? `${book.pages} Seiten` : ''}</span>
+                    </div>
+                )}
+            </div>
+        </div>
+    </div>
+}
+
 export default function BookCard({ frontendBook, isOwner }: { frontendBook: Book, isOwner: boolean }) {
     const [book, setBook] = useState<Book | null>(frontendBook)
 
@@ -154,51 +204,8 @@ export default function BookCard({ frontendBook, isOwner }: { frontendBook: Book
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <div className="max-w-xs w-full font-sans rounded-lg bg-white shadow-lg overflow-hidden flex flex-col group transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 cursor-pointer">
-                    <div className="relative">
-                        <img src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`} alt={`${book.title} Cover`} className="w-full h-40 object-cover" />
-                        <div className="absolute top-2 right-2 flex flex-col items-end gap-2">
-                            {progressPercentage >= 100 && (
-                                <span className="flex items-center gap-1 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
-                                    <CheckIcon />
-                                    Gelesen
-                                </span>
-                            )}
-                            {book.wishlisted && (
-                                <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex"><StarFilledIcon />Wunschliste</span>
-                            )}
-                        </div>
-                    </div>
-                    <div className="p-4 flex flex-col flex-grow">
-                        <h3 className="text-xl font-bold text-gray-800 truncate group-hover:text-blue-600 transition-colors">{book.title}</h3>
-                        {book.author && (<p className="text-sm text-gray-500 mb-4">{book.author}</p>)}
-                        <div className="flex-grow" />
-                        <div className="mt-2 h-10 flex flex-col justify-end">
-                            {progressPercentage >= 100 ? (
-                                <div className="bg-green-100 rounded-lg p-2 text-center">
-                                    <span className="font-bold text-sm text-green-700">Abgeschlossen! 🎉</span>
-                                </div>
-                            ) : progressPercentage > 0 ? (
-                                <div>
-                                    <div className="flex justify-between text-xs text-gray-500">
-                                        <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
-                                    </div>
-                                    <div className="flex justify-between mb-1">
-                                        <span className="text-xs font-medium text-gray-600">Fortschritt</span>
-                                        <span className="text-xs font-medium text-gray-600">{book.progress}/{book.pages} Seiten</span>
-                                    </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="flex justify-between text-xs text-gray-500">
-                                    <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
-                                    <span>{book.pages ? `${book.pages} Seiten` : ''}</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                <div>
+                    <BookCardComponent book={book} progressPercentage={progressPercentage} />
                 </div>
             </DialogTrigger>
 
