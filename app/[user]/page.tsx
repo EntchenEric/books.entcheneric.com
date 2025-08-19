@@ -410,7 +410,7 @@ export default function ProfilePage({
                 ) : (
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {filteredAndSortedBooks.map((book) => (
-                            <>
+                            <div key={book.id} className="h-full">
                                 {book.ISBNumber === "SERIES" ? (
                                     <a href={`${dbUser.url}/${book.title}`} key={book.id} className="group">
                                         <BookCardComponent book={book} key={book.id} progressPercentage={book?.progress != null && book?.pages != null && book?.pages > 0
@@ -419,9 +419,8 @@ export default function ProfilePage({
                                     </a>
                                 ) : (
                                     <BookCard frontendBook={book} key={book.id} isOwner={isOwner} />
-
                                 )}
-                            </>
+                            </div>
                         ))}
                     </div>
                 )}
