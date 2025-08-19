@@ -149,7 +149,7 @@ function DeleteButton({ bookId, setBook }: { bookId: string, setBook: React.Disp
 }
 
 export function BookCardComponent({ book, progressPercentage }: { book: Book, progressPercentage: number }) {
-    return <Card className="p-0 h-full cursor-pointer transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-gray-100 hover:drop-shadow-gray-400 hover:drop-shadow-xl">
+    return <Card className="p-0 h-full cursor-pointer transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:drop-shadow-gray-400 hover:drop-shadow-xl">
         <CardHeader className="p-0 relative">
             <img
                 src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`} alt={`${book.title} Cover`}
@@ -183,13 +183,13 @@ export function BookCardComponent({ book, progressPercentage }: { book: Book, pr
                                 <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
                             </div>
                             <div className="flex justify-between mb-1">
-                                <span className="text-xs font-medium text-gray-600">Fortschritt</span>
-                                <span className="text-xs font-medium text-gray-600">{book.progress}/{book.pages} Seiten</span>
+                                <span className="text-xs font-medium text-secondary-foreground">Fortschritt</span>
+                                <span className="text-xs font-medium text-secondary-foreground">{book.progress}/{book.pages} Seiten</span>
                             </div>
                             <Progress value={progressPercentage} />
                         </div>
                     ) : (
-                        <div className="flex justify-between text-xs text-gray-500">
+                        <div className="flex justify-between text-xs text-secondary-foreground">
                             <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
                             <span>{book.pages ? `${book.pages} Seiten` : ''}</span>
                         </div>
@@ -226,14 +226,14 @@ export default function BookCard({ frontendBook, isOwner }: { frontendBook: Book
                     <div className="p-6 flex-1">
                         <DialogHeader>
                             <DialogTitle className="text-3xl font-bold mb-1">{book.title}</DialogTitle>
-                            <p className="text-lg text-gray-600">{book.author}</p>
-                            <p className="text-sm text-gray-400">
+                            <p className="text-lg text-secondary-foreground">{book.author}</p>
+                            <p className="text-sm text-secondary-foreground">
                                 {book.publicationYear} • {book.pages} Seiten
                             </p>
                         </DialogHeader>
                         <div className="my-4">
                             <div
-                                className="text-gray-700 leading-relaxed"
+                                className="text-secondary-foreground leading-relaxed"
                                 dangerouslySetInnerHTML={{ __html: book.description || "Keine Beschreibung verfügbar." }}
                             />
                         </div>

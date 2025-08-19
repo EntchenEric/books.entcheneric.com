@@ -88,9 +88,9 @@ export default function PurchaseOptionsFetcher({ book }: { book: Book }) {
                     }
                     <div className="space-y-2">
                         {options.map((opt) => (
-                            <a href={opt.url} key={opt.storeName} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 p-2 rounded-md transition-colors">
-                                <span className="text-gray-700">{opt.storeName}</span>
-                                <span className="font-bold text-blue-600">{opt.price}</span>
+                            <a href={opt.url} key={opt.storeName} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center bg-muted hover:bg-muted/50 p-2 rounded-md transition-colors">
+                                <span className="text-muted-foreground">{opt.storeName}</span>
+                                <span className="font-bold text-muted-foreground">{opt.price}</span>
                             </a>
                         ))}
                     </div>

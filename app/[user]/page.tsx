@@ -4,21 +4,18 @@ import { useEffect, useState, useCallback } from "react"
 import type { Session, UserWithBooks, Book } from "@/app/lib/definitions"
 import { verifySession } from "@/app/lib/dal"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import LoginButton from "@/app/ui/login-button"
 import LogoutButton from "@/app/ui/logout-button"
-import AddBookButton from "@/app/ui/add-book-button"
-import BookCard, { BookCardComponent } from "@/app/ui/book-card"
 import {
-    Search, AlertTriangle, BookOpenCheck, Library, LibraryBig, SlidersHorizontal,
-    ArrowUpDown, Heart, BookCheck, Book as BookIcon,
-    Pencil, Check, X
+    AlertTriangle, Library, LibraryBig, Pencil, Check, X
 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import ProfilePageSkeleton from "@/app/ui/profile/skeleton"
+import SortAndFilter from "../ui/profile/sortAndFilter"
+import BookDisplay from "../ui/profile/bookDisplay"
 
 type BooksInSeries = {
     name: string;
@@ -44,7 +41,6 @@ export default function ProfilePage({
     const [editableTitle, setEditableTitle] = useState("");
     const [editableDescription, setEditableDescription] = useState("");
     const [titleReloading, setTitleReloading] = useState(false);
-    const [booksInSeries, setBooksInSeries] = useState<BooksInSeries[]>([]);
 
     const isOwner = !!session && !!dbUser && session.userId === dbUser.id;
 
@@ -64,8 +60,7 @@ export default function ProfilePage({
                     } else {
                         const userData = await res.json();
                         setDbUser(userData);
-                        findAndSetBookSeries(userData?.books, setBooksInSeries);
-                        setFilteredAndSortedBooks(userData?.books || []);
+                            setFilteredAndSortedBooks(userData?.books || []);
                         setEditableTitle(userData.title || `${userData.url}'s Library`);
                         setEditableDescription(userData.description || "A great collection of books.");
                     }
@@ -77,46 +72,6 @@ export default function ProfilePage({
 
         verifySession().then(setSession);
     }, [params, reloadUser]);
-
-    const findAndSetBookSeries = (
-        allBooks: Book[],
-        setBooksInSeries: React.Dispatch<React.SetStateAction<BooksInSeries[]>>
-    ) => {
-        if (!allBooks || allBooks.length === 0) {
-            setBooksInSeries([]);
-            return;
-        }
-
-        const seriesMap = allBooks.reduce((acc, book) => {
-            const baseTitle = book.title.replace(/\s+(?:Vol\.?|#)?\d+$/i, '').trim();
-            const seriesKey = `${book.author.toLowerCase()}-${baseTitle.toLowerCase()}`;
-
-            if (!acc[seriesKey]) {
-                acc[seriesKey] = [];
-            }
-            acc[seriesKey].push(book);
-            return acc;
-        }, {} as Record<string, Book[]>);
-
-        const foundSeries = Object.values(seriesMap)
-            .filter(group => group.length > 1)
-            .map((group): BooksInSeries => {
-                group.sort((a, b) => {
-                    const numA = parseInt(a.title.match(/\d+$/)?.[0] || '0');
-                    const numB = parseInt(b.title.match(/\d+$/)?.[0] || '0');
-                    return numA - numB;
-                });
-
-                const baseTitle = group[0].title.replace(/\s+(?:Vol\.?|#)?\d+$/i, '').trim();
-
-                return {
-                    name: baseTitle,
-                    books: group,
-                };
-            });
-
-        setBooksInSeries(foundSeries);
-    };
 
     useEffect(() => {
         if (!dbUser?.books) {
@@ -227,7 +182,6 @@ export default function ProfilePage({
 
     const handleCancel = () => {
         if (!dbUser) return;
-        // Reset fields to their original values
         setEditableTitle(dbUser.title || `${dbUser.url}'s Library`);
         setEditableDescription(dbUser.description || "A great collection of books.");
         setIsEditing(false);
@@ -329,148 +283,24 @@ export default function ProfilePage({
                         {(session === null ? <LoginButton /> : <LogoutButton />)}
                     </div>
                 </header>}
-            <Card className="mb-8">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <SlidersHorizontal className="h-5 w-5" />
-                        Filtern & Sortieren
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                    <div className="relative sm:col-span-2 lg:col-span-2">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="text"
-                            placeholder="Nach Titel oder Autor filtern..."
-                            className="pl-10"
-                            value={filter}
-                            onChange={e => setFilter(e.target.value)}
-                        />
-                    </div>
 
-                    <Select value={sort} onValueChange={setSort}>
-                        <SelectTrigger><div className="flex w-full items-center gap-2">
-                            <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                            <SelectValue />
-                        </div></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="title-asc">Titel (A-Z)</SelectItem>
-                            <SelectItem value="title-desc">Titel (Z-A)</SelectItem>
-                            <SelectItem value="date-desc">Datum (Neueste)</SelectItem>
-                            <SelectItem value="date-asc">Datum (Älteste)</SelectItem>
-                        </SelectContent>
-                    </Select>
+            <SortAndFilter 
+                filter={filter}
+                setFilter={setFilter}
+                sort={sort}
+                setSort={setSort}
+                finishedStatus={finishedStatus}
+                setFinishedStatus={setFinishedStatus}
+                wishlistStatus={wishlistStatus}
+                setWishlistStatus={setWishlistStatus}
+            />
 
-                    <Select value={wishlistStatus} onValueChange={setWishlistStatus}>
-                        <SelectTrigger><div className="flex w-full items-center gap-2">
-                            <Heart className="h-4 w-4 text-muted-foreground" />
-                            <SelectValue />
-                        </div></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Alle (Wunschliste)</SelectItem>
-                            <SelectItem value="wishlisted">Auf der Wunschliste</SelectItem>
-                            <SelectItem value="not-wishlisted">In der Bibliothek</SelectItem>
-                        </SelectContent>
-                    </Select>
-
-                    <Select value={finishedStatus} onValueChange={setFinishedStatus}>
-                        <SelectTrigger><div className="flex w-full items-center gap-2">
-                            <BookCheck className="h-4 w-4 text-muted-foreground" />
-                            <SelectValue />
-                        </div></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Alle (Lesestatus)</SelectItem>
-                            <SelectItem value="finished">Beendet</SelectItem>
-                            <SelectItem value="not-finished">Nicht beendet</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </CardContent>
-            </Card>
-
-            <div>
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="flex items-center gap-3 text-2xl font-semibold tracking-tight">
-                        <BookIcon className="h-6 w-6" />
-                        <span>{filteredAndSortedBooks.length} {filteredAndSortedBooks.length === 1 ? "Buch" : "Bücher"} gefunden</span>
-                    </h2>
-                    {isOwner && <AddBookButton addBook={addBook} userId={dbUser.id} />}
-                </div>
-
-                {filteredAndSortedBooks.length <= 0 ? (
-                    <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/20 text-center p-12 h-80">
-                        <BookOpenCheck className="h-16 w-16 text-muted-foreground mb-4" />
-                        <h3 className="text-xl font-semibold mb-2">Keine Bücher gefunden</h3>
-                        <p className="text-muted-foreground max-w-sm">
-                            {isOwner
-                                ? "Deine Bibliothek ist leer. Füge ein Buch hinzu, um deine Sammlung zu starten!"
-                                : `${dbUser.url} hat noch keine Bücher, die den Filtern entsprechen.`
-                            }
-                        </p>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                        {filteredAndSortedBooks.map((book) => (
-                            <div key={book.id} className="h-full">
-                                {book.ISBNumber === "SERIES" ? (
-                                    <a href={`${dbUser.url}/${book.title}`} key={book.id} className="group">
-                                        <BookCardComponent book={book} key={book.id} progressPercentage={book?.progress != null && book?.pages != null && book?.pages > 0
-                                            ? (book.progress / book.pages) * 100
-                                            : 0} />
-                                    </a>
-                                ) : (
-                                    <BookCard frontendBook={book} key={book.id} isOwner={isOwner} />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+            <BookDisplay 
+                addBook={addBook}
+                dbUser={dbUser} 
+                filteredAndSortedBooks={filteredAndSortedBooks}
+                isOwner={isOwner}
+            />
         </main>
     )
-}
-
-function ProfilePageSkeleton() {
-    return (
-        <main className="container mx-auto p-4 md:p-8 animate-pulse">
-            <header className="mb-8 flex items-center justify-between border-b pb-4">
-                <div className="flex items-center gap-4">
-                    <Skeleton className="h-12 w-12 rounded-md" />
-                    <div>
-                        <Skeleton className="h-10 w-64 mb-2" />
-                        <Skeleton className="h-4 w-48" />
-                    </div>
-                </div>
-                <Skeleton className="h-10 w-24" />
-            </header>
-            <Card className="mb-8">
-                <CardHeader>
-                    <Skeleton className="h-6 w-32" />
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                    <Skeleton className="h-10 sm:col-span-2 lg:col-span-2" />
-                    <Skeleton className="h-10" />
-                    <Skeleton className="h-10" />
-                    <Skeleton className="h-10" />
-                </CardContent>
-            </Card>
-            <div>
-                <div className="flex items-center justify-between mb-4">
-                    <Skeleton className="h-8 w-40" />
-                    <Skeleton className="h-10 w-32" />
-                </div>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                        <div key={i} className="rounded-lg border bg-card text-card-foreground shadow-sm">
-                            <Skeleton className="h-40 w-full rounded-t-lg" />
-                            <div className="p-6">
-                                <Skeleton className="h-5 w-4/5 mb-2" />
-                                <Skeleton className="h-4 w-3/g" />
-                                <Skeleton className="h-10 w-full mt-4" />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </main>
-    );
 }

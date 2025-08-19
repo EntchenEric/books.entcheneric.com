@@ -44,7 +44,6 @@ export default function AddBookButton({ addBook, userId }: { addBook: (book: Boo
             </DialogTrigger>
             <DialogContent className="sm:max-w-[480px]">
                 {!selectedBook ? (
-                    // STEP 1: Search View
                     <>
                         <DialogHeader>
                             <DialogTitle>Neues Buch finden</DialogTitle>
@@ -75,7 +74,7 @@ export default function AddBookButton({ addBook, userId }: { addBook: (book: Boo
                             </DialogTitle>
                         </DialogHeader>
 
-                        <div className="flex items-start gap-4 rounded-md border bg-muted/20 p-4">
+                        <div className="flex items-start gap-4 rounded-md border p-4">
                             <img
                                 src={selectedBook.volumeInfo.imageLinks?.thumbnail ?? 'https://books.google.com/googlebooks/images/no_cover_thumb.gif'}
                                 alt={`Cover of ${selectedBook.volumeInfo.title}`}

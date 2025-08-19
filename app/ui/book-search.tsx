@@ -86,7 +86,7 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
     function BookResultCard({ book }: { book: BookItem }) {
         return <div
             onClick={() => handleSelectOption(book)}
-            className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-primary-foreground"
         >
             <Check
                 className={cn(
@@ -143,7 +143,7 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
                     }}
                     className="pl-10"
                 />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
             </div>
             <CommandList>
                 {isLoading ? (
@@ -173,7 +173,7 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
                         </CommandItem>
                     ))
                 ) : (
-                    <p className="p-4 text-center text-sm text-gray-500">
+                    <p className="p-4 text-center text-sm text-muted-foreground">
                         Keine Bücher gefunden.
                     </p>
                 )}
