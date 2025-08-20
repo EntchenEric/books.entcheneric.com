@@ -14,23 +14,24 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-export default function LogoutButton() {
-  const handleLogout = async () => {
-    const promise = () => new Promise((resolve) => {
-      deleteSession().then(() => {
-        resolve(null);
-      });
+const handleLogout = async () => {
+  const promise = () => new Promise((resolve) => {
+    deleteSession().then(() => {
+      resolve(null);
     });
+  });
 
-    toast.promise(promise, {
-      loading: 'Abmeldung wird durchgeführt...',
-      success: () => {
-        setTimeout(() => window.location.reload(), 500);
-        return 'Du wurdest erfolgreich abgemeldet.';
-      },
-      error: 'Abmeldung fehlgeschlagen.',
-    });
-  }
+  toast.promise(promise, {
+    loading: 'Abmeldung wird durchgeführt...',
+    success: () => {
+      setTimeout(() => window.location.reload(), 500);
+      return 'Du wurdest erfolgreich abgemeldet.';
+    },
+    error: 'Abmeldung fehlgeschlagen.',
+  });
+}
+
+export default function LogoutButton() {
 
   return (
     <AlertDialog>
