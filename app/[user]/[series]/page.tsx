@@ -94,8 +94,8 @@ export default function ProfilePage({
             switch (sort) {
                 case "title-asc": return a.title.localeCompare(b.title);
                 case "title-desc": return b.title.localeCompare(a.title);
-                case "date-asc": default: return new Date(a.publicationYear).getTime() - new Date(b.publicationYear).getTime();
                 case "date-desc": return new Date(b.publicationYear).getTime() - new Date(a.publicationYear).getTime();
+                case "date-asc": default: return new Date(a.publicationYear).getTime() - new Date(b.publicationYear).getTime();
             }
         });
         setFilteredAndSortedBooks(books);
