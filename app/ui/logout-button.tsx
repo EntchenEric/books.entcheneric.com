@@ -16,9 +16,10 @@ import {
 
 export default function LogoutButton() {
   const handleLogout = async () => {
-    const promise = () => new Promise(async (resolve) => {
-        await deleteSession();
+    const promise = () => new Promise((resolve) => {
+      deleteSession().then(() => {
         resolve(null);
+      });
     });
 
     toast.promise(promise, {
@@ -35,8 +36,8 @@ export default function LogoutButton() {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="outline">
-            <LogOutIcon className="mr-2 h-4 w-4" />
-            <span>Abmelden</span>
+          <LogOutIcon className="mr-2 h-4 w-4" />
+          <span>Abmelden</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

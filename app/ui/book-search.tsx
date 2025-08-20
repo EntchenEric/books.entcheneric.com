@@ -84,9 +84,9 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
     }
 
     function BookResultCard({ book }: { book: BookItem }) {
-        return <div
+        return <button
             onClick={() => handleSelectOption(book)}
-            className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-primary-foreground"
+            className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-primary-foreground text-left"
         >
             <Check
                 className={cn(
@@ -126,7 +126,7 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
                     </span>
                 )}
             </div>
-        </div>
+        </button>
     }
 
     return (
