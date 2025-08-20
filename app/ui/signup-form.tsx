@@ -17,7 +17,7 @@ export default function SignupForm() {
 
     return (
         <form action={action} className="*:mb-3">
-            <div>
+            <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
                 <Input id="name" name="name" placeholder="Name" />
             </div>
@@ -25,7 +25,7 @@ export default function SignupForm() {
                 <AlertCircleIcon />
                 <AlertTitle>{state.errors.name}</AlertTitle>
             </Alert>}
-            <div>
+            <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" name="password" type="password" />
             </div>

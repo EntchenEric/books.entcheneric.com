@@ -1,14 +1,41 @@
 import { z } from 'zod'
 import { User as DbUser } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+
+async function isNameTaken(name: string) {
+  const user = await prisma.user.findUnique({
+    where: {
+      url: name
+    }
+  })
+
+  return !!user
+}
 
 export const SignupFormSchema = z.object({
   name: z
     .string()
     .min(2, { message: 'Der Name muss mindestens 2 Zeichen lang sein.' })
-    .trim(),
+    .max(64, {message: "Der Name darf nicht länger als 64 Zeichen sein."})
+    .regex(/^[a-zA-Z0-9_.\s]+$/, { message: 'Der Name enthält ungültige Zeichen. Er darf nur aus Buchstaben, Zahlen, Leertasten, Punkten und Unterstrichen bestehen.' })
+    .trim()
+    .refine(async (name) => {
+      return name != "register";
+    }, {
+      message: 'Der Name darf nicht "register" sein.',
+    })
+    .refine(async (name) => {
+      return !await isNameTaken(name);
+    }, {
+      message: 'Dieser Name ist bereits vergeben.',
+    }),
   password: z
     .string()
-    .min(8, { message: 'Das Passwort muss mindestens 8 Zeichen lang sein.' })
+    .min(8, { message: 'mindestens 8 Zeichen lang sein.' })
+    .max(64, {message: "Das Passwort darf maximal 64 Zeichen lang sein."})
     .trim(),
 })
 
@@ -133,7 +160,7 @@ export type GoogleBooksApiResponse = {
 export type UserWithBooks = DbUser & { books: Book[] };
 
 export type PurchaseOption = {
-    storeName: string;
-    price: string;
-    url: string;
+  storeName: string;
+  price: string;
+  url: string;
 };

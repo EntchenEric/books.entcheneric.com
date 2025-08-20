@@ -39,6 +39,8 @@ export async function signup(state: FormState, formData: FormData) {
         }
     }
 
+    
+
     const user = await prisma.user.create({
         data: {
             url: name.toLowerCase(),
