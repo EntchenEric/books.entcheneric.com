@@ -100,7 +100,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: { book: Book
                         disabled={markAllAsFinished}
                         onCheckedChange={(checked) => {
                             const isChecked = checked === true;
-                            setIsWishlisted(isChecked);
+                            setMarkAllAsFinished(isChecked);
                             if (isChecked && formRef.current) {
                                 const pageInput = formRef.current.elements.namedItem("pageProgress") as HTMLInputElement;
                                 if (pageInput) pageInput.value = '0';
