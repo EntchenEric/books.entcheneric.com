@@ -44,7 +44,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
         }
     }
 
-    const { bookId, pageProgress: pageProgress } = validatedFields.data
+    const { bookId, pageProgress } = validatedFields.data
 
     const resposne = await fetch("https://www.googleapis.com/books/v1/volumes/" + bookId);
 

@@ -58,7 +58,12 @@ function WishlistButton({ book, setBook }: WishlistButtonProps) {
     else return <Button onClick={() => changeWishlistStatus(book.id, true, setBook, setLoading)}><StarIcon /> Auf die Wunschliste</Button>
 }
 
-function PageProgressInput({ book, setBook }: { book: Book, setBook: React.Dispatch<React.SetStateAction<Book | null>> }) {
+type PageProgressInput = {
+    readonly book: Book,
+    readonly setBook: React.Dispatch<React.SetStateAction<Book | null>>
+}
+
+function PageProgressInput({ book, setBook }: PageProgressInput) {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState<number>(book.progress || 0);
 
