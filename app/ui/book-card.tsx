@@ -148,6 +148,30 @@ function DeleteButton({ bookId, setBook }: { bookId: string, setBook: React.Disp
     );
 }
 
+function ProgressBar({ book, progressPercentage }: { book: Book, progressPercentage: number }) {
+    if (progressPercentage >= 100)
+        return <div className="bg-green-100 rounded-lg p-2 text-center">
+            <span className="font-bold text-sm text-green-700">Abgeschlossen! 🎉</span>
+        </div>
+
+    if (progressPercentage > 0)
+        return <div>
+            <div className="flex justify-between text-xs text-gray-500">
+                <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
+            </div>
+            <div className="flex justify-between mb-1">
+                <span className="text-xs font-medium text-secondary-foreground">Fortschritt</span>
+                <span className="text-xs font-medium text-secondary-foreground">{book.progress}/{book.pages} Seiten</span>
+            </div>
+            <Progress value={progressPercentage} />
+        </div>
+
+    return <div className="flex justify-between text-xs text-secondary-foreground">
+        <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
+        <span>{book.pages ? `${book.pages} Seiten` : ''}</span>
+    </div>
+}
+
 export function BookCardComponent({ book, progressPercentage }: { book: Book, progressPercentage: number }) {
     return <Card className="p-0 h-full cursor-pointer transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:drop-shadow-gray-400 hover:drop-shadow-xl">
         <CardHeader className="p-0 relative">
@@ -173,27 +197,7 @@ export function BookCardComponent({ book, progressPercentage }: { book: Book, pr
             </CardTitle>
             <CardDescription>
                 <div className="h-10 flex flex-col justify-end pb-2 mt-auto">
-                    {progressPercentage >= 100 ? (
-                        <div className="bg-green-100 rounded-lg p-2 text-center">
-                            <span className="font-bold text-sm text-green-700">Abgeschlossen! 🎉</span>
-                        </div>
-                    ) : progressPercentage > 0 ? (
-                        <div>
-                            <div className="flex justify-between text-xs text-gray-500">
-                                <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
-                            </div>
-                            <div className="flex justify-between mb-1">
-                                <span className="text-xs font-medium text-secondary-foreground">Fortschritt</span>
-                                <span className="text-xs font-medium text-secondary-foreground">{book.progress}/{book.pages} Seiten</span>
-                            </div>
-                            <Progress value={progressPercentage} />
-                        </div>
-                    ) : (
-                        <div className="flex justify-between text-xs text-secondary-foreground">
-                            <span>{book.publicationYear ? ` erschienen ${book.publicationYear}` : ''}</span>
-                            <span>{book.pages ? `${book.pages} Seiten` : ''}</span>
-                        </div>
-                    )}
+                    <ProgressBar book={book} progressPercentage={progressPercentage}/>
                 </div>
             </CardDescription>
         </CardContent>
