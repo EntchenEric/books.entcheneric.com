@@ -32,9 +32,13 @@ const fetchOptionsFromApi = (query: string, userId: string): Promise<GoogleBooks
     });
 };
 
+type BookResultCardProps = {
+    readonly book: BookItem
+    readonly handleSelectOption: (option: BookItem) => void,
+    readonly value: string
+}
 
-
-function BookResultCard({ book, handleSelectOption, value }: { book: BookItem, handleSelectOption: (option: BookItem) => void, value: string }) {
+function BookResultCard({ book, handleSelectOption, value }: BookResultCardProps) {
     return <button
         onClick={() => handleSelectOption(book)}
         className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-primary-foreground text-left"
@@ -48,10 +52,12 @@ function BookResultCard({ book, handleSelectOption, value }: { book: BookItem, h
         {book.volumeInfo.imageLinks?.smallThumbnail ? (
             <img
                 src={book.volumeInfo.imageLinks.smallThumbnail}
+                alt={"Cover of " + book.volumeInfo.title}
                 className="mr-2 h-10 w-7 object-cover rounded"
             />
         ) : <img
             src={'https://books.google.com/googlebooks/images/no_cover_thumb.gif'}
+            alt={"Cover of " + book.volumeInfo.title}
             className="mr-2 h-10 w-7 object-cover rounded"
         />}
         <div className="flex flex-col min-w-0">
@@ -75,19 +81,31 @@ function BookResultCard({ book, handleSelectOption, value }: { book: BookItem, h
     </button>
 }
 
-function SearchResults({ options, handleSelectOption, value }: { options: BookItem[], handleSelectOption: (book: BookItem) => void, value: string }) {
+type SearchResultsProps = {
+    readonly options: BookItem[],
+    readonly handleSelectOption: (book: BookItem) => void,
+    readonly value: string
+}
+
+function SearchResults({ options, handleSelectOption, value }: SearchResultsProps) {
     if (options?.length < 0)
         return <p className="p-4 text-center text-sm text-muted-foreground">
             Keine Bücher gefunden.
         </p>
-    return  options.filter((o) => o.volumeInfo?.title && o.volumeInfo?.authors).map((book, index) => (
-            <CommandItem key={book.id}>
-                <BookResultCard book={book} handleSelectOption={handleSelectOption} value={value} />
-            </CommandItem>
-        ))
+    return options.filter((o) => o.volumeInfo?.title && o.volumeInfo?.authors).map((book, index) => (
+        <CommandItem key={book.id}>
+            <BookResultCard book={book} handleSelectOption={handleSelectOption} value={value} />
+        </CommandItem>
+    ))
 }
 
-export default function BookSearch({ selectedBook, setSelectedBook, userId }: { selectedBook: BookItem | null, setSelectedBook: (book: BookItem | null) => void, userId: string }) {
+type BookSearchProps = {
+    readonly selectedBook: BookItem | null,
+    readonly setSelectedBook: (book: BookItem | null) => void,
+    readonly userId: string
+}
+
+export default function BookSearch({ selectedBook, setSelectedBook, userId }: BookSearchProps) {
     const [value, setValue] = React.useState<string>("");
     const [inputValue, setInputValue] = React.useState("");
     const [options, setOptions] = React.useState<BookItem[]>([]);

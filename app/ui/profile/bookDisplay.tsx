@@ -1,20 +1,21 @@
 import { Book, User } from "@/app/lib/definitions"
 import { BookIcon, BookOpenCheck } from "lucide-react"
 import AddBookButton from "../add-book-button"
-import { BookCardComponent } from "../book-card"
-import BookCard from "../book-card"
+import BookCard, { BookCardComponent } from "@/app/ui/book-card"
+
+type BookDisplayProps = {
+    readonly filteredAndSortedBooks: Book[],
+    readonly isOwner: boolean,
+    readonly addBook: (book: Book) => void,
+    readonly dbUser: User
+}
 
 export default function BookDisplay({
-    filteredAndSortedBooks, 
+    filteredAndSortedBooks,
     isOwner,
     addBook,
     dbUser
-}: {
-    filteredAndSortedBooks: Book[],
-    isOwner: boolean,
-    addBook: (book: Book) => void,
-    dbUser:User
-}) {
+}: BookDisplayProps) {
     return <div>
         <div className="flex items-center justify-between mb-4">
             <h2 className="flex items-center gap-3 text-2xl font-semibold tracking-tight">

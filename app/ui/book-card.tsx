@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Book, Session } from "../lib/definitions";
+import { Book } from "../lib/definitions";
 import { CheckIcon, StarFilledIcon, TrashIcon, Pencil1Icon, StarIcon } from "@radix-ui/react-icons"
 import { ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -45,7 +45,12 @@ const changeWishlistStatus = (bookId: string, wishlistStatus: boolean, setBook: 
     })
 }
 
-function WishlistButton({ book, setBook }: { book: Book, setBook: React.Dispatch<React.SetStateAction<Book | null>> }) {
+type WishlistButtonProps = {
+    readonly book: Book,
+    readonly setBook: React.Dispatch<React.SetStateAction<Book | null>>
+}
+
+function WishlistButton({ book, setBook }: WishlistButtonProps) {
     const [loading, setLoading] = useState(false);
 
     if (loading) return <Button disabled>Lädt...</Button>
@@ -105,7 +110,12 @@ function PageProgressInput({ book, setBook }: { book: Book, setBook: React.Dispa
     );
 }
 
-function DeleteButton({ bookId, setBook }: { bookId: string, setBook: React.Dispatch<React.SetStateAction<Book | null>> }) {
+type DeleteButtonProps = {
+    readonly bookId: string
+    readonly setBook: React.Dispatch<React.SetStateAction<Book | null>>
+}
+
+function DeleteButton({ bookId, setBook }: DeleteButtonProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -148,7 +158,12 @@ function DeleteButton({ bookId, setBook }: { bookId: string, setBook: React.Disp
     );
 }
 
-function ProgressBar({ book, progressPercentage }: { book: Book, progressPercentage: number }) {
+type ProgressBarProps = {
+    readonly book: Book,
+    readonly progressPercentage: number
+}
+
+function ProgressBar({ book, progressPercentage }: ProgressBarProps) {
     if (progressPercentage >= 100)
         return <div className="bg-green-100 rounded-lg p-2 text-center">
             <span className="font-bold text-sm text-green-700">Abgeschlossen! 🎉</span>
@@ -172,7 +187,12 @@ function ProgressBar({ book, progressPercentage }: { book: Book, progressPercent
     </div>
 }
 
-export function BookCardComponent({ book, progressPercentage }: { book: Book, progressPercentage: number }) {
+type BookCardComponentProps = {
+    readonly book: Book,
+    readonly progressPercentage: number
+}
+
+export function BookCardComponent({ book, progressPercentage }: BookCardComponentProps) {
     return <Card className="p-0 h-full cursor-pointer transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:drop-shadow-gray-400 hover:drop-shadow-xl">
         <CardHeader className="p-0 relative">
             <img
@@ -197,14 +217,19 @@ export function BookCardComponent({ book, progressPercentage }: { book: Book, pr
             </CardTitle>
             <CardDescription>
                 <div className="h-10 flex flex-col justify-end pb-2 mt-auto">
-                    <ProgressBar book={book} progressPercentage={progressPercentage}/>
+                    <ProgressBar book={book} progressPercentage={progressPercentage} />
                 </div>
             </CardDescription>
         </CardContent>
     </Card>
 }
 
-export default function BookCard({ frontendBook, isOwner }: { frontendBook: Book, isOwner: boolean }) {
+type BookCard = {
+    readonly frontendBook: Book,
+    readonly isOwner: boolean
+}
+
+export default function BookCard({ frontendBook, isOwner }: BookCard) {
     const [book, setBook] = useState<Book | null>(frontendBook)
 
     const progressPercentage =

@@ -16,11 +16,13 @@ import SortAndFilter from "@/app/ui/profile/sortAndFilter"
 import BookDisplay from "@/app/ui/profile/bookDisplay"
 import ProfilePageSkeleton from "@/app/ui/profile/skeleton"
 
+type SeriesPageProps = {
+    readonly params: Promise<{ user: string, series: string }>;
+};
+
 export default function ProfilePage({
     params,
-}: {
-    params: Promise<{ user: string, series: string }>;
-}) {
+}: SeriesPageProps) {
     const [series, setSeries] = useState<string>("");
     const [dbUser, setDbUser] = useState<UserWithBooks | null>(null);
     const [loading, setLoading] = useState(true);
@@ -37,7 +39,7 @@ export default function ProfilePage({
     const [editableDescription, setEditableDescription] = useState("");
     const [titleReloading, setTitleReloading] = useState(false);
 
-    const isOwner = !!session && !!dbUser && session.userId === dbUser.id;
+    const isOwner = session && dbUser && session.userId === dbUser.id;
 
     const addBook = useCallback((book: Book) => {
         setReloadUser(prev => prev + 1);
@@ -241,7 +243,7 @@ export default function ProfilePage({
                 addBook={addBook}
                 dbUser={dbUser}
                 filteredAndSortedBooks={filteredAndSortedBooks}
-                isOwner={isOwner}
+                isOwner={isOwner || false}
             />
         </main>
     )

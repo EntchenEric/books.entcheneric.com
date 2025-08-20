@@ -11,7 +11,12 @@ import {
     AlertTitle,
 } from "@/components/ui/alert"
 import { AlertCircle, Loader2 } from "lucide-react"
-function LoginButton({ pending }: { pending: boolean }) {
+
+type LoginButtonProps = {
+    readonly pending: boolean
+}
+
+function LoginButton({ pending }: LoginButtonProps) {
     return (
         <Button type="submit" disabled={pending} className="w-full">
             {pending ? (
@@ -49,7 +54,7 @@ export default function LoginForm() {
                     <AlertDescription>
                         <ul className="list-disc pl-5">
                             {state.errors.password.map((error, index) => (
-                                <li className="text-xs">{error}</li>
+                                <li className="text-xs" key={index}>{error}</li>
                             ))}
                         </ul>
                     </AlertDescription>

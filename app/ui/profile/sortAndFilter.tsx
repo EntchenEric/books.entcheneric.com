@@ -4,6 +4,17 @@ import { Input } from "@/components/ui/input"
 import { SlidersHorizontal, Search, ArrowUpDown, Heart, BookCheck } from "lucide-react"
 import { ThemeSwitcher } from "@/components/ui/themeSwitch"
 
+type SortAndFilterProps = {
+    readonly filter: string,
+    readonly setFilter: (filter: string) => void,
+    readonly sort: string,
+    readonly setSort: (sorting: string) => void,
+    readonly wishlistStatus: string,
+    readonly setWishlistStatus: (wishlistStatus: string) => void,
+    readonly finishedStatus: string,
+    readonly setFinishedStatus: (finished: string) => void
+}
+
 export default function SortAndFilter({
     filter,
     setFilter,
@@ -11,24 +22,15 @@ export default function SortAndFilter({
     setSort,
     wishlistStatus,
     setWishlistStatus,
-    finishedStatus, 
+    finishedStatus,
     setFinishedStatus
-}: {
-    filter: string, 
-    setFilter: (filter: string) => void,
-    sort: string,
-    setSort: (sorting: string) => void,
-    wishlistStatus: string,
-    setWishlistStatus: (wishlistStatus: string) => void,
-    finishedStatus: string,
-    setFinishedStatus: (finished: string) => void
-}) {
+}: SortAndFilterProps) {
     return <Card className="mb-8">
         <CardHeader>
             <CardTitle className="flex items-center justify-between">
                 <div className="flex gap-2">
-                <SlidersHorizontal className="h-5 w-5" />
-                Filtern & Sortieren
+                    <SlidersHorizontal className="h-5 w-5" />
+                    Filtern & Sortieren
                 </div>
                 <ThemeSwitcher />
             </CardTitle>

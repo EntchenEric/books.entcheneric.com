@@ -17,16 +17,13 @@ import ProfilePageSkeleton from "@/app/ui/profile/skeleton"
 import SortAndFilter from "../ui/profile/sortAndFilter"
 import BookDisplay from "../ui/profile/bookDisplay"
 
-type BooksInSeries = {
-    name: string;
-    books: Book[];
-}
+type ProfilePageProps = {
+    readonly params: Promise<{ user: string }>;
+};
 
 export default function ProfilePage({
     params,
-}: {
-    params: Promise<{ user: string }>
-}) {
+}: ProfilePageProps) {
     const [dbUser, setDbUser] = useState<UserWithBooks | null>(null);
     const [loading, setLoading] = useState(true);
     const [session, setSession] = useState<Session | null>(null);
@@ -42,7 +39,7 @@ export default function ProfilePage({
     const [editableDescription, setEditableDescription] = useState("");
     const [titleReloading, setTitleReloading] = useState(false);
 
-    const isOwner = !!session && !!dbUser && session.userId === dbUser.id;
+    const isOwner = session && dbUser && session.userId === dbUser.id;
 
     const addBook = useCallback((book: Book) => {
         setReloadUser(prev => prev + 1);
@@ -60,7 +57,7 @@ export default function ProfilePage({
                     } else {
                         const userData = await res.json();
                         setDbUser(userData);
-                            setFilteredAndSortedBooks(userData?.books || []);
+                        setFilteredAndSortedBooks(userData?.books || []);
                         setEditableTitle(userData.title || `${userData.url}'s Library`);
                         setEditableDescription(userData.description || "A great collection of books.");
                     }
@@ -284,7 +281,7 @@ export default function ProfilePage({
                     </div>
                 </header>}
 
-            <SortAndFilter 
+            <SortAndFilter
                 filter={filter}
                 setFilter={setFilter}
                 sort={sort}
@@ -295,11 +292,11 @@ export default function ProfilePage({
                 setWishlistStatus={setWishlistStatus}
             />
 
-            <BookDisplay 
+            <BookDisplay
                 addBook={addBook}
-                dbUser={dbUser} 
+                dbUser={dbUser}
                 filteredAndSortedBooks={filteredAndSortedBooks}
-                isOwner={isOwner}
+                isOwner={isOwner || false}
             />
         </main>
     )

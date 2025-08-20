@@ -1,4 +1,3 @@
-import { verifySession } from '@/app/lib/dal';
 import { Book, PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -23,7 +22,7 @@ const updatePurchaseOptions = async (book: Book) => {
         const data = await result.json();
         if (data.search_metadata?.status == "Success") {
             data.organic_results.map(async (item: any) => {
-                if (!!item.rich_snippet?.bottom?.detected_extensions?.price) {
+                if (item.rich_snippet?.bottom?.detected_extensions?.price) {
                     await prisma.purchaseOptionCache.create({
                         data: {
                             bookId: book.id,
@@ -74,6 +73,7 @@ export async function POST(request: NextRequest) {
         });
         return NextResponse.json(purchaseOptions);
     } catch (error) {
+        console.log(error)
         return NextResponse.json({ message: "Internal server error" }, { status: 500 })
     }
 }

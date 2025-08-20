@@ -29,7 +29,7 @@ export async function signup(state: FormState, formData: FormData) {
         }
     })
 
-    if (!!oldUser) {
+    if (oldUser) {
         return {
             errors: {
                 name: [

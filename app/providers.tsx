@@ -13,8 +13,11 @@ const themes = [
     'baby-blue',
 ]
 
+type ProvidersProps = {
+    readonly children: React.ReactNode
+}
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: ProvidersProps) {
     return <ThemeProvider
         attribute="class"
         defaultTheme='system'

@@ -13,7 +13,12 @@ import { BookItem, Book } from "../lib/definitions";
 import AddBookForm from "./add-book-form";
 import { PlusIcon, ArrowLeftIcon } from "lucide-react";
 
-export default function AddBookButton({ addBook, userId }: { addBook: (book: Book) => void, userId: string }) {
+type AddBookButtonProps = {
+    readonly addBook: (book: Book) => void,
+    readonly userId: string
+}
+
+export default function AddBookButton({ addBook, userId }: AddBookButtonProps) {
     const [selectedBook, setSelectedBook] = useState<BookItem | null>(null);
     const [keepOpen, setKeepOpen] = useState(false);
     const [open, setOpen] = useState(false);

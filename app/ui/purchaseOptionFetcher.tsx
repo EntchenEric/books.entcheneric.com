@@ -57,8 +57,11 @@ async function fetchPurchaseOptions(googleBookId: string, bookId: string): Promi
     return purchaseOptions;
 }
 
+type PurchaseOptionFetcherProps = {
+    readonly book: Book
+}
 
-export default function PurchaseOptionsFetcher({ book }: { book: Book }) {
+export default function PurchaseOptionsFetcher({ book }: PurchaseOptionFetcherProps) {
     const [options, setOptions] = useState<PurchaseOption[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

@@ -16,8 +16,11 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+type SubmitButtonProps = {
+    readonly pending: boolean
+}
 
-function SubmitButton({ pending }: { pending: boolean }) {
+function SubmitButton({ pending }: SubmitButtonProps) {
     return (
         <Button type="submit" disabled={pending} className="w-full">
             {pending ? (
@@ -32,7 +35,13 @@ function SubmitButton({ pending }: { pending: boolean }) {
     );
 }
 
-export default function AddBookForm({ book, addBook, setKeepOpen }: { book: BookItem; addBook: (book: Book) => void; setKeepOpen: (keepOpen: boolean) => void; }) {
+type AddBookFormProps = {
+    readonly book: BookItem
+    readonly addBook: (book: Book) => void,
+    readonly setKeepOpen: (keepOpen: boolean) => void
+}
+
+export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormProps) {
     const [state, formAction, pending] = useActionState(apiAddBook, undefined);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [addSeries, setAddSeries] = useState(false);

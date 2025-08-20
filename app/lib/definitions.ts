@@ -1,8 +1,5 @@
 import { z } from 'zod'
 import { User as DbUser } from '@prisma/client'
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
 
 export const SignupFormSchema = z.object({
   name: z
