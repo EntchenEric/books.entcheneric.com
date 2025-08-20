@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
             }
         })
 
-        if (book && book.lastPurchaseOptionUpdatedAt) {
+        if (book?.lastPurchaseOptionUpdatedAt) {
             if (moreThanThreeDaysAgo(book.lastPurchaseOptionUpdatedAt)) {
                 await updatePurchaseOptions(book);
             }
