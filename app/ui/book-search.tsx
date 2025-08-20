@@ -33,8 +33,61 @@ const fetchOptionsFromApi = (query: string, userId: string): Promise<GoogleBooks
 };
 
 
+
+function BookResultCard({ book, handleSelectOption, value }: { book: BookItem, handleSelectOption: (option: BookItem) => void, value: string }) {
+    return <button
+        onClick={() => handleSelectOption(book)}
+        className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-primary-foreground text-left"
+    >
+        <Check
+            className={cn(
+                "mr-2 h-4 w-4",
+                value === book.id ? "opacity-100" : "opacity-0"
+            )}
+        />
+        {book.volumeInfo.imageLinks?.smallThumbnail ? (
+            <img
+                src={book.volumeInfo.imageLinks.smallThumbnail}
+                className="mr-2 h-10 w-7 object-cover rounded"
+            />
+        ) : <img
+            src={'https://books.google.com/googlebooks/images/no_cover_thumb.gif'}
+            className="mr-2 h-10 w-7 object-cover rounded"
+        />}
+        <div className="flex flex-col min-w-0">
+            <span className="font-medium truncate max-w-xs">
+                {book.volumeInfo.title || "Unbekannter Titel"}
+            </span>
+            <span className="text-xs text-gray-500 truncate max-w-xs">
+                {book.volumeInfo.authors?.join(", ") || "Unbekannter Autor"}
+                {book.volumeInfo.publishedDate
+                    ? ` • ${book.volumeInfo.publishedDate.slice(0, 4)}`
+                    : ""}
+            </span>
+            {book.volumeInfo.description && (
+                <span className="text-xs text-gray-400 truncate max-w-xs">
+                    {book.volumeInfo.description.length > 80
+                        ? book.volumeInfo.description.slice(0, 77) + "..."
+                        : book.volumeInfo.description}
+                </span>
+            )}
+        </div>
+    </button>
+}
+
+function SearchResults({ options, handleSelectOption, value }: { options: BookItem[], handleSelectOption: (book: BookItem) => void, value: string }) {
+    if (options?.length < 0)
+        return <p className="p-4 text-center text-sm text-muted-foreground">
+            Keine Bücher gefunden.
+        </p>
+    return  options.filter((o) => o.volumeInfo?.title && o.volumeInfo?.authors).map((book, index) => (
+            <CommandItem key={book.id}>
+                <BookResultCard book={book} handleSelectOption={handleSelectOption} value={value} />
+            </CommandItem>
+        ))
+}
+
 export default function BookSearch({ selectedBook, setSelectedBook, userId }: { selectedBook: BookItem | null, setSelectedBook: (book: BookItem | null) => void, userId: string }) {
-    const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState<string>("");
     const [inputValue, setInputValue] = React.useState("");
     const [options, setOptions] = React.useState<BookItem[]>([]);
@@ -79,55 +132,9 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
         isSelectionChange.current = true;
         setValue(option.id);
         setInputValue(option.volumeInfo.title ?? "Unbekanntes Buch");
-        setOpen(false);
         setSelectedBook(option)
     }
 
-    function BookResultCard({ book }: { book: BookItem }) {
-        return <button
-            onClick={() => handleSelectOption(book)}
-            className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-primary-foreground text-left"
-        >
-            <Check
-                className={cn(
-                    "mr-2 h-4 w-4",
-                    value === book.id ? "opacity-100" : "opacity-0"
-                )}
-            />
-            {book.volumeInfo.imageLinks?.smallThumbnail ? (
-                <img
-                    src={book.volumeInfo.imageLinks.smallThumbnail}
-                    className="mr-2 h-10 w-7 object-cover rounded"
-                />
-            ) : <img
-                src={'https://books.google.com/googlebooks/images/no_cover_thumb.gif'}
-                className="mr-2 h-10 w-7 object-cover rounded"
-            />}
-            <div className="flex flex-col min-w-0">
-                <span className="font-medium truncate max-w-xs">
-                    {book.volumeInfo.title ? book.volumeInfo.title.length > 40
-                        ? book.volumeInfo.title.slice(0, 37) + "..."
-                        : book.volumeInfo.title : "Unbekannter Titel"}
-                </span>
-                <span className="text-xs text-gray-500 truncate max-w-xs">
-                    {book.volumeInfo.authors ? book.volumeInfo.authors?.join(", ").length > 40
-                        ? book.volumeInfo.authors?.join(", ").slice(0, 37) + "..."
-                        : book.volumeInfo.authors?.join(", ")
-                        : "Unbekannter Autor"}
-                    {book.volumeInfo.publishedDate
-                        ? ` • ${book.volumeInfo.publishedDate.slice(0, 4)}`
-                        : ""}
-                </span>
-                {book.volumeInfo.description && (
-                    <span className="text-xs text-gray-400 truncate max-w-xs">
-                        {book.volumeInfo.description.length > 80
-                            ? book.volumeInfo.description.slice(0, 77) + "..."
-                            : book.volumeInfo.description}
-                    </span>
-                )}
-            </div>
-        </button>
-    }
 
     return (
         <Command>
@@ -166,17 +173,11 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: { 
                             </div>
                         ))}
                     </>
-                ) : !!options && options.length > 0 ? (
-                    options.filter((o) => o.volumeInfo?.title && o.volumeInfo?.authors).map((book, index) => (
-                        <CommandItem key={index}>
-                            <BookResultCard book={book} />
-                        </CommandItem>
-                    ))
-                ) : (
-                    <p className="p-4 text-center text-sm text-muted-foreground">
-                        Keine Bücher gefunden.
-                    </p>
-                )}
+                ) : <SearchResults
+                    handleSelectOption={handleSelectOption}
+                    options={options}
+                    value={value}
+                />}
             </CommandList>
         </Command>
     )
