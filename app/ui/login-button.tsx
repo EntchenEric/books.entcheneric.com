@@ -14,7 +14,7 @@ export default function LoginButton() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button><PersonIcon />Anmelden</Button>
+        <Button id="LoginButton"><PersonIcon />Anmelden</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
