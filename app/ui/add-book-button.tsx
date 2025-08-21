@@ -42,7 +42,7 @@ export default function AddBookButton({ addBook, userId }: AddBookButtonProps) {
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button>
+                <Button id="AddBookButton">
                     <PlusIcon className="mr-2 h-4 w-4" />
                     Buch hinzufügen
                 </Button>

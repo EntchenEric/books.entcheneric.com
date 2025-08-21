@@ -157,6 +157,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
                             <FormItem className="flex items-center gap-3 space-y-0">
                                 <FormControl>
                                     <Checkbox
+                                        name="Wishlisted"
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
                                         disabled={watchMarkAllAsFinished}
@@ -177,6 +178,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
                             <FormItem className="flex items-center gap-3 space-y-0">
                                 <FormControl>
                                     <Checkbox
+                                        name="EntireSeries"
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
                                     />
@@ -205,6 +207,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
                                 <FormItem className="flex items-center gap-3 space-y-0 pl-4">
                                     <FormControl>
                                         <Checkbox
+                                            name="MarkAllAsFinished"
                                             checked={field.value}
                                             onCheckedChange={field.onChange}
                                         />
@@ -225,6 +228,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
                             <FormItem className="flex items-center gap-3 space-y-0">
                                 <FormControl>
                                     <Checkbox
+                                        name="KeepOpen"
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
                                     />

@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export default defineConfig({
+  projectId: '662cgp',
   e2e: {
     setupNodeEvents(on, config) {
       on('task', {
