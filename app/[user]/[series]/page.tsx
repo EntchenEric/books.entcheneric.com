@@ -216,7 +216,7 @@ export default function ProfilePage({
                     </div>
 
                     <div className="sm:ml-4">
-                        {(session === null ? <LoginButton /> : <LogoutButton />)}
+                        {(session === null ? <LoginButton name={dbUser.url} /> : <LogoutButton />)}
                     </div>
                 </header>}
 
