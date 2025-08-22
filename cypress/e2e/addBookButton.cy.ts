@@ -39,7 +39,7 @@ describe("Add Book Button", () => {
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('button[data-slot="dialog-close"]').click()
-            cy.get('div[role="dialog"]').not('exist')
+            cy.get('div[role="dialog"]').should('not.exist')
         })
     })
 
@@ -54,7 +54,7 @@ describe("Add Book Button", () => {
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('div[role="dialog"]').type('{esc}')
-            cy.get('div[role="dialog"]').not('exist')
+            cy.get('div[role="dialog"]').should('not.exist')
         })
     })
 })

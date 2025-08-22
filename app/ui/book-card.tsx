@@ -149,14 +149,14 @@ function DeleteButton({ bookId, setBook }: DeleteButtonProps) {
                     {loading ? "Löschen..." : <><TrashIcon />Löschen</>}
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent id="BookDeleteConfirmDialog">
                 <DialogHeader>
                     <DialogTitle>Buch löschen</DialogTitle>
                 </DialogHeader>
                 <p>Willst du dieses Buch wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
                 <div className="mt-4 flex justify-end">
-                    <Button variant="outline" onClick={() => setOpen(false)}>Abbrechen</Button>
-                    <Button variant="destructive" onClick={handleDelete} className="ml-2">Löschen</Button>
+                    <Button variant="outline" onClick={() => setOpen(false)} id="BookDeleteConfirmCancel">Abbrechen</Button>
+                    <Button variant="destructive" onClick={handleDelete} className="ml-2" id="BookDeleteConfirmConfirm">Löschen</Button>
                 </div>
             </DialogContent>
         </Dialog>
@@ -281,7 +281,7 @@ export default function BookCard({ frontendBook, isOwner }: BookCard) {
                         </a>
                         {
                             isOwner &&
-                            <div className="mt-6 pt-4 border-t grid gap-2 grid-cols-1">
+                            <div className="mt-6 pt-4 border-t grid gap-2 grid-cols-1" id="CardButtonActions">
                                 <WishlistButton book={book} setBook={setBook} />
                                 <PageProgressInput book={book} setBook={setBook} />
                                 <DeleteButton bookId={book.id} setBook={setBook} />
