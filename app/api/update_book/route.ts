@@ -41,7 +41,6 @@ export async function POST(request: NextRequest) {
         }
 
         const changed_data = {
-            finished: body.finished,
             progress: body.progress,
             wishlisted: body.wishlisted
         }
@@ -59,6 +58,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(book);
     } catch (error) {
         console.error(error)
-        return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
     }
 }
