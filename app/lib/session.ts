@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation'
 
 
 const secretKey = process.env.SESSION_SECRET
+const isSecure = process.env.NODE_ENV === 'production'
 const encodedKey = new TextEncoder().encode(secretKey)
 
 export async function createSession(userId: string) {
@@ -17,6 +18,7 @@ export async function createSession(userId: string) {
 
   cookieStore.set('session', session, {
     httpOnly: true,
+    secure: isSecure,
     expires: expiresAt,
     sameSite: 'lax',
     path: '/',

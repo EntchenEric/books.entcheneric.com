@@ -88,7 +88,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
     const searchResults = await fetch("http://localhost:3000//api/search_books", {
         method: 'POST',
         body: JSON.stringify({
-            query: BookData.volumeInfo?.title?.slice(0, Math.floor(BookData.volumeInfo.title.length * 0.7)),
+            query: BookData.volumeInfo?.title?.slice(0, Math.floor(BookData.volumeInfo.title.length * 0.85)),
             userId: session.userId,
         })
     });
@@ -134,7 +134,8 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
             }
         }
         distance = matrix[a.length][b.length];
-        return 1 - distance / length;
+        const similarity = 1 - distance / length
+        return similarity;
     }
 
     const booksInSeries = searchData.items.filter((item: BookItem) => {
@@ -153,7 +154,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
         return {
             success: false,
             errors: {
-                bookId: ["Buch nicht gefunden. Bitte versuche es später noch einmal."]
+                bookId: ["Buch leider nicht gefunden. Bitte versuche es später noch einmal."]
             }
         }
     }
@@ -190,7 +191,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
         return {
             success: false,
             errors: {
-                bookId: ["Buch nicht gefunden. Bitte versuche es später noch einmal."]
+                bookId: ["Buch wurde nicht gefunden. Bitte versuche es später noch einmal."]
             }
         }
     }

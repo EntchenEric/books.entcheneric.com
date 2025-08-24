@@ -10,11 +10,15 @@ import LoginForm from "./login-form"
 import { Button } from "@/components/ui/button"
 import { PersonIcon } from "@radix-ui/react-icons"
 
-export default function LoginButton() {
+type LoginButtonProps = {
+  readonly name: string
+}
+
+export default function LoginButton({ name }: LoginButtonProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button><PersonIcon />Anmelden</Button>
+        <Button id="LoginButton"><PersonIcon />Anmelden</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -23,7 +27,7 @@ export default function LoginButton() {
             Bitte melde dich an.
           </DialogDescription>
         </DialogHeader>
-        <LoginForm />
+        <LoginForm name={name} />
       </DialogContent>
     </Dialog>
   )
