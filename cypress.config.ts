@@ -5,6 +5,10 @@ const prisma = new PrismaClient();
 
 export default defineConfig({
   projectId: '662cgp',
+  retries: 4,
+  execTimeout: 10000,
+  taskTimeout: 12000,
+  pageLoadTimeout: 12000,
   e2e: {
     setupNodeEvents(on, config) {
       on('task', {
