@@ -26,7 +26,7 @@ export default function BookDisplay({
         </div>
 
         {filteredAndSortedBooks.length <= 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/20 text-center p-12 h-80">
+            <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted/20 text-center p-12 h-80" id="AddedBooks">
                 <BookOpenCheck className="h-16 w-16 text-muted-foreground mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Keine Bücher gefunden</h3>
                 <p className="text-muted-foreground max-w-sm">
@@ -37,7 +37,7 @@ export default function BookDisplay({
                 </p>
             </div>
         ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" id="AddedBooks">
                 {filteredAndSortedBooks.map((book) => (
                     <div key={book.id} className="h-full">
                         {book.ISBNumber === "SERIES" ? (

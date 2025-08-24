@@ -36,7 +36,7 @@ export default function LogoutButton() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" id="LogoutButton">
           <LogOutIcon className="mr-2 h-4 w-4" />
           <span>Abmelden</span>
         </Button>

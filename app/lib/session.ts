@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation'
 
 
 const secretKey = process.env.SESSION_SECRET
+const isSecure = process.env.NODE_ENV === 'production'
 const encodedKey = new TextEncoder().encode(secretKey)
 
 export async function createSession(userId: string) {
@@ -17,7 +18,7 @@ export async function createSession(userId: string) {
 
   cookieStore.set('session', session, {
     httpOnly: true,
-    secure: true,
+    secure: isSecure,
     expires: expiresAt,
     sameSite: 'lax',
     path: '/',
@@ -33,10 +34,21 @@ export async function encrypt(payload: SessionPayload) {
 }
 
 export async function decrypt(session: string | undefined = '') {
-  const { payload } = await jwtVerify(session, encodedKey, {
-    algorithms: ['HS256'],
-  })
-  return payload
+  if (!session) {
+    return null
+  }
+
+  try {
+    const { payload } = await jwtVerify(session, encodedKey, {
+      algorithms: ['HS256'],
+    })
+    return payload
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error decrypting jwt', error)
+    }
+    return null
+  }
 }
 
 export async function updateSession() {

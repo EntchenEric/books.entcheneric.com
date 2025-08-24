@@ -48,7 +48,7 @@ export default function RegisterPage() {
             placeholder="Name"
           />
           {
-            accountName && <a href={accountName}>
+            accountName && <a href={`/${encodeURIComponent(accountName)}`}>
               <Button>
                 Zum account
               </Button>

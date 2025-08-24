@@ -1,26 +1,35 @@
 "use client"
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useTransition } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
 import { addbook as apiAddBook } from "@/app/actions/addBook";
 import { BookItem, Book } from "../lib/definitions";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
 import { Loader2, Info } from "lucide-react";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+} from "@/components/ui/form";
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { AddBookFormSchema } from "../lib/definitions";
 
-type SubmitButtonProps = {
-    readonly pending: boolean
-}
+type AddBookFormValues = z.infer<typeof AddBookFormSchema>;
 
-function SubmitButton({ pending }: SubmitButtonProps) {
+function SubmitButton({ pending }: { readonly pending: boolean }) {
     return (
         <Button type="submit" disabled={pending} className="w-full">
             {pending ? (
@@ -42,149 +51,200 @@ type AddBookFormProps = {
 }
 
 export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormProps) {
-    const [state, formAction, pending] = useActionState(apiAddBook, undefined);
-    const [isWishlisted, setIsWishlisted] = useState(false);
-    const [addSeries, setAddSeries] = useState(false);
-    const [markAllAsFinished, setMarkAllAsFinished] = useState(false);
-    const formRef = useRef<HTMLFormElement>(null);
+    const [isPending, startTransition] = useTransition();
+
+    const form = useForm<AddBookFormValues>({
+        //@ts-ignore
+        resolver: zodResolver(AddBookFormSchema),
+        defaultValues: {
+            bookId: book.id,
+            pageProgress: 0,
+            isWishlisted: false,
+            addSeries: false,
+            markAllAsFinished: false,
+            keepOpen: false,
+        },
+    });
+
+    const watchIsWishlisted = form.watch("isWishlisted");
+    const watchAddSeries = form.watch("addSeries");
+    const watchMarkAllAsFinished = form.watch("markAllAsFinished");
 
     useEffect(() => {
-        if (!pending && state) {
-            toast.dismiss();
-            if (state.success && state.books) {
+        if (watchIsWishlisted || watchAddSeries) {
+            form.setValue("pageProgress", 0);
+        }
+    }, [watchIsWishlisted, watchAddSeries, form]);
+
+    useEffect(() => {
+        setKeepOpen(form.getValues("keepOpen"));
+    }, [form.watch("keepOpen"), setKeepOpen, form]);
+
+
+    async function onSubmit(values: AddBookFormValues) {
+        const toastId = toast.loading("Buch wird hinzugefügt...");
+
+        startTransition(async () => {
+            const formData = new FormData();
+            Object.entries(values).forEach(([key, value]) => {
+                formData.append(key, String(value));
+            });
+
+            const state = await apiAddBook(undefined, formData);
+
+            toast.dismiss(toastId);
+            if (state?.success && state.books) {
                 toast.success("Buch erfolgreich hinzugefügt!");
-                state.books.forEach((book) => {
-                    addBook(book as any);
-                })
-                formRef.current?.reset();
-                setIsWishlisted(false);
-            } else if (state.errors) {
+                state.books.forEach((book) => addBook(book as any));
+                if (!values.keepOpen) {
+                    form.reset();
+                }
+            } else if (state?.errors) {
                 const errorMessages = Object.values(state.errors).flat().join("\n");
                 toast.error("Fehler beim Hinzufügen", { description: errorMessages });
             } else {
                 toast.error("Ein unbekannter Fehler ist aufgetreten.");
             }
-        }
-    }, [state, pending, addBook]);
+        });
+    }
 
     return (
-        <form
-            ref={formRef}
-            action={(formData) => {
-                toast.loading("Buch wird hinzugefügt...");
-                formAction(formData);
-            }}
-            className="space-y-4 pt-2"
-        >
-            <input type="hidden" name="bookId" value={book.id} />
+        <Form {...form}>
+            {/*@ts-ignore*/}
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-2">
+                <FormField
+                    //@ts-ignore
+                    control={form.control}
+                    name="bookId"
+                    render={({ field }) => <input type="hidden" {...field} />}
+                />
 
-            <div>
-                <Label htmlFor="pageProgress" className="font-medium">
-                    Lesefortschritt (optional)
-                </Label>
-                <div className="flex items-center gap-2 mt-1.5">
-                    <Input
-                        id="pageProgress"
-                        name="pageProgress"
-                        type="number"
-                        placeholder="0"
-                        min={0}
-                        max={book.volumeInfo.pageCount}
-                        className="w-24"
-                        disabled={isWishlisted || addSeries}
+                <FormField
+                    //@ts-ignore
+                    control={form.control}
+                    name="pageProgress"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="font-medium">Lesefortschritt (optional)</FormLabel>
+                            <div className="flex items-center gap-2 mt-1.5">
+                                <FormControl>
+                                    <Input
+                                        type="number"
+                                        placeholder="0"
+                                        min={0}
+                                        max={book.volumeInfo.pageCount}
+                                        className="w-24"
+                                        disabled={watchIsWishlisted || watchAddSeries}
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <span className="text-sm text-muted-foreground">
+                                    / {book.volumeInfo.pageCount ?? '?'} Seiten
+                                </span>
+                            </div>
+                        </FormItem>
+                    )}
+                />
+
+                <Separator />
+
+                <div className="space-y-3">
+                    <FormField
+                        //@ts-ignore
+                        control={form.control}
+                        name="isWishlisted"
+                        render={({ field }) => (
+                            <FormItem className="flex items-center gap-3 space-y-0">
+                                <FormControl>
+                                    <Checkbox
+                                        name="Wishlisted"
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                        disabled={watchMarkAllAsFinished}
+                                    />
+                                </FormControl>
+                                <FormLabel className="cursor-pointer text-sm font-normal">
+                                    Auf meine Wunschliste setzen
+                                </FormLabel>
+                            </FormItem>
+                        )}
                     />
-                    <span className="text-sm text-muted-foreground">
-                        / {book.volumeInfo.pageCount ?? '?'} Seiten
-                    </span>
-                </div>
-            </div>
 
-            <Separator />
-
-            <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                    <Checkbox
-                        id="isWishlisted"
-                        checked={isWishlisted}
-                        disabled={markAllAsFinished}
-                        onCheckedChange={(checked) => {
-                            const isChecked = checked === true;
-                            setMarkAllAsFinished(isChecked);
-                            if (isChecked && formRef.current) {
-                                const pageInput = formRef.current.elements.namedItem("pageProgress") as HTMLInputElement;
-                                if (pageInput) pageInput.value = '0';
-                            }
-                        }}
+                    <FormField
+                        //@ts-ignore
+                        control={form.control}
+                        name="addSeries"
+                        render={({ field }) => (
+                            <FormItem className="flex items-center gap-3 space-y-0">
+                                <FormControl>
+                                    <Checkbox
+                                        name="EntireSeries"
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormLabel className="cursor-pointer text-sm font-normal flex items-center gap-1.5">
+                                    Gesamte Buchserie hinzufügen
+                                    <Tooltip>
+                                        <TooltipTrigger>
+                                            <Info className="w-4 h-4 text-muted-foreground" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Es können unter Umständen nicht alle Bücher hinzugefügt werden.</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </FormLabel>
+                            </FormItem>
+                        )}
                     />
-                    <input type="hidden" name="isWishlisted" value={String(isWishlisted)} />
-                    <Label htmlFor="isWishlisted" className="cursor-pointer text-sm font-normal">
-                        Auf meine Wunschliste setzen
-                    </Label>
-                </div>
 
-                <div className="flex items-center gap-3">
-                    <Checkbox
-                        id="addSeries"
-                        checked={addSeries}
-                        onCheckedChange={(checked) => {
-                            const isChecked = checked === true;
-                            setAddSeries(isChecked);
-                            if (isChecked && formRef.current) {
-                                const pageInput = formRef.current.elements.namedItem("pageProgress") as HTMLInputElement;
-                                if (pageInput) pageInput.value = '0';
-                            }
-                        }}
-                    />
-                    <input type="hidden" name="addSeries" value={String(addSeries)} />
-                    <Label htmlFor="addSeries" className="cursor-pointer text-sm font-normal">
-                        Gesammte Buchserie hinzufügen
-                        <Tooltip>
-                            <TooltipTrigger>
-                                <Info className="w-4 text-muted-foreground"/>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p className="text-sm">
-                                    Es können unter umständen nicht alle Bücher hinzugefügt werden. <br /> Bitte überprüfe die Liste der hinzugefügten Bücher nach dem Hinzufügen.
-                                </p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </Label>
-                </div>
-
-                {
-                    addSeries && <div className="flex items-center gap-3">
-                        <Checkbox
-                            id="markAllAsFinished"
-                            checked={markAllAsFinished}
-                            onCheckedChange={(checked) => {
-                                const isChecked = checked === true;
-                                setAddSeries(isChecked);
-                                if (isChecked && formRef.current) {
-                                    const pageInput = formRef.current.elements.namedItem("pageProgress") as HTMLInputElement;
-                                    if (pageInput) pageInput.value = '0';
-                                }
-                            }}
+                    {watchAddSeries && (
+                        <FormField
+                            //@ts-ignore
+                            control={form.control}
+                            name="markAllAsFinished"
+                            render={({ field }) => (
+                                <FormItem className="flex items-center gap-3 space-y-0 pl-4">
+                                    <FormControl>
+                                        <Checkbox
+                                            name="MarkAllAsFinished"
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <FormLabel className="cursor-pointer text-sm font-normal">
+                                        Alle als gelesen markieren
+                                    </FormLabel>
+                                </FormItem>
+                            )}
                         />
-                        <input type="hidden" name="markAllAsFinished" value={String(markAllAsFinished)} />
-                        <Label htmlFor="markAllAsFinished" className="cursor-pointer text-sm font-normal">
-                            Alle als gelesen markieren
-                        </Label>
-                    </div>}
+                    )}
 
-                <div className="flex items-center gap-3">
-                    <Checkbox
-                        id="keepOpen"
-                        onCheckedChange={(checked) => setKeepOpen(checked === true)}
+                    <FormField
+                        //@ts-ignore
+                        control={form.control}
+                        name="keepOpen"
+                        render={({ field }) => (
+                            <FormItem className="flex items-center gap-3 space-y-0">
+                                <FormControl>
+                                    <Checkbox
+                                        name="KeepOpen"
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormLabel className="cursor-pointer text-sm font-normal">
+                                    Dialog für nächstes Buch offen lassen
+                                </FormLabel>
+                            </FormItem>
+                        )}
                     />
-                    <Label htmlFor="keepOpen" className="cursor-pointer text-sm font-normal">
-                        Dialog für nächstes Buch offen lassen
-                    </Label>
                 </div>
-            </div>
 
-            <div className="pt-2">
-                <SubmitButton pending={pending} />
-            </div>
-        </form>
+                <div className="pt-2">
+                    <SubmitButton pending={isPending} />
+                </div>
+            </form>
+        </Form>
     );
 }

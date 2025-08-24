@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
                 await updatePurchaseOptions(book);
             }
         } else {
-            return NextResponse.json({ message: "Book not found" }, { status: 404 });
+            return NextResponse.json({ error: "Book not found" }, { status: 404 });
         }
 
         const purchaseOptions = await prisma.purchaseOptionCache.findMany({
@@ -73,7 +73,6 @@ export async function POST(request: NextRequest) {
         });
         return NextResponse.json(purchaseOptions);
     } catch (error) {
-        console.log(error)
-        return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
     }
 }

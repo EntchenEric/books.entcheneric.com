@@ -5,7 +5,7 @@ export const SignupFormSchema = z.object({
   name: z
     .string()
     .min(2, { message: 'Der Name muss mindestens 2 Zeichen lang sein.' })
-    .max(64, {message: "Der Name darf nicht länger als 64 Zeichen sein."})
+    .max(64, { message: "Der Name darf nicht länger als 64 Zeichen sein." })
     .regex(/^[a-zA-Z0-9_.\s]+$/, { message: 'Der Name enthält ungültige Zeichen. Er darf nur aus Buchstaben, Zahlen, Leertasten, Punkten und Unterstrichen bestehen.' })
     .trim()
     .refine((name) => {
@@ -15,15 +15,18 @@ export const SignupFormSchema = z.object({
     }),
   password: z
     .string()
-    .min(8, { message: 'mindestens 8 Zeichen lang sein.' })
-    .max(64, {message: "Das Passwort darf maximal 64 Zeichen lang sein."})
+    .min(8, { message: 'Das Passwort muss mindestens 8 Zeichen lang sein.' })
+    .max(64, { message: "Das Passwort darf maximal 64 Zeichen lang sein." })
     .trim(),
 })
 
 export const AddBookFormSchema = z.object({
   bookId: z.string(),
   isWishlisted: z.boolean().default(false),
-  pageProgress: z.coerce.number().min(0, { message: "Der Fortschritt muss mindestens 0 sein." })
+  addSeries: z.boolean().default(false),
+  markAllAsFinished: z.boolean().default(false),
+  keepOpen: z.boolean().default(false),
+  pageProgress: z.coerce.number().int().min(0).optional(),
 }).refine(
   (data) => !(data.isWishlisted && data.pageProgress !== 0),
   { message: 'Der Fortschritt muss 0 sein, wenn das Buch auf der Wunschliste ist.', path: ['pageProgress'] }

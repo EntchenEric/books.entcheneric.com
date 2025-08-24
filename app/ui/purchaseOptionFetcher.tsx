@@ -19,7 +19,6 @@ async function fetchSerpPurchaseOptions(bookId: string): Promise<PurchaseOption[
 
     if (result.ok) {
         const data: PurchaseOptionCache[] = await result.json();
-        console.log("data: ", data)
         return data.map(item => ({
             storeName: item.retailerName,
             price: formatCurrency(Number(item.price)),
@@ -89,7 +88,7 @@ export default function PurchaseOptionsFetcher({ book }: PurchaseOptionFetcherPr
                         options.length === 0 && (<div className="text-sm text-gray-500">Keine Kaufoptionen gefunden.</div>
                         )
                     }
-                    <div className="space-y-2">
+                    <div className="space-y-2" id="BuyOptionList">
                         {options.map((opt) => (
                             <a href={opt.url} key={opt.storeName} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center bg-muted hover:bg-muted/50 p-2 rounded-md transition-colors">
                                 <span className="text-muted-foreground">{opt.storeName}</span>

@@ -25,7 +25,7 @@ export default function SortAndFilter({
     finishedStatus,
     setFinishedStatus
 }: SortAndFilterProps) {
-    return <Card className="mb-8">
+    return <Card className="mb-8" id="SortAndFilter">
         <CardHeader>
             <CardTitle className="flex items-center justify-between">
                 <div className="flex gap-2">
@@ -48,11 +48,11 @@ export default function SortAndFilter({
             </div>
 
             <Select value={sort} onValueChange={setSort}>
-                <SelectTrigger><div className="flex w-full items-center gap-2">
+                <SelectTrigger><div className="flex w-full items-center gap-2" id="SortSelectTrigger">
                     <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
                     <SelectValue />
                 </div></SelectTrigger>
-                <SelectContent>
+                <SelectContent id="SortSelect">
                     <SelectItem value="title-asc">Titel (A-Z)</SelectItem>
                     <SelectItem value="title-desc">Titel (Z-A)</SelectItem>
                     <SelectItem value="date-desc">Datum (Neueste)</SelectItem>
@@ -61,11 +61,11 @@ export default function SortAndFilter({
             </Select>
 
             <Select value={wishlistStatus} onValueChange={setWishlistStatus}>
-                <SelectTrigger><div className="flex w-full items-center gap-2">
+                <SelectTrigger><div className="flex w-full items-center gap-2" id="WishlistFilterSelectTrigger">
                     <Heart className="h-4 w-4 text-muted-foreground" />
                     <SelectValue />
                 </div></SelectTrigger>
-                <SelectContent>
+                <SelectContent id="WishlistFilterSelect">
                     <SelectItem value="all">Alle (Wunschliste)</SelectItem>
                     <SelectItem value="wishlisted">Auf der Wunschliste</SelectItem>
                     <SelectItem value="not-wishlisted">In der Bibliothek</SelectItem>
@@ -73,11 +73,11 @@ export default function SortAndFilter({
             </Select>
 
             <Select value={finishedStatus} onValueChange={setFinishedStatus}>
-                <SelectTrigger><div className="flex w-full items-center gap-2">
+                <SelectTrigger><div className="flex w-full items-center gap-2" id="FinishedFilterSelectTrigger">
                     <BookCheck className="h-4 w-4 text-muted-foreground" />
                     <SelectValue />
                 </div></SelectTrigger>
-                <SelectContent>
+                <SelectContent id="FinishedFilterSelect">
                     <SelectItem value="all">Alle (Lesestatus)</SelectItem>
                     <SelectItem value="finished">Beendet</SelectItem>
                     <SelectItem value="not-finished">Nicht beendet</SelectItem>
