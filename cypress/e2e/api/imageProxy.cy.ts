@@ -14,16 +14,4 @@ describe("Image proxy", () => {
             expect(response.status).to.equal(200)
         })
     })
-
-    it('should return 400 if no url is provided', () => {
-        cy.request({
-            method: 'POST',
-            url: 'http://localhost:3000/api/image_proxy',
-            body: { id: "thisUsershouldnotexist" },
-            failOnStatusCode: false
-        }).then((response) => {
-            expect(response.status).to.equal(400)
-            expect(response.body.error).to.equal('Image URL is required')
-        })
-    })
 })

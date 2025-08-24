@@ -92,7 +92,7 @@ describe("delete book route", () => {
     })
 
     it('should return 401 if not Book owner', () => {
-        cy.task('db:dummybook2');
+        cy.task('db:dummybook3');
         cy.session('not book owner session', () => {
             cy.visit('http://localhost:3000/testUser')
             cy.get('#LoginButton').click()
@@ -104,7 +104,7 @@ describe("delete book route", () => {
             cy.request({
                 method: 'POST',
                 url: 'http://localhost:3000/api/delete_book',
-                body: { id: "2" },
+                body: { id: "3" },
                 failOnStatusCode: false
             }).then((response) => {
                 expect(response.status).to.equal(401)

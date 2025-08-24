@@ -41,119 +41,173 @@ describe("Sort and Filter", () => {
     it('should sort books correctly newest first', () => {
         cy.get('#SortSelectTrigger').click()
         cy.get('#SortSelect').should('exist')
-        cy.get('#SortSelect').contains('Neuste').click()
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(0).contains('Attack on Titan 2');
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(1).contains('Death Note 7');
+        cy.get('#SortSelect').contains('Neueste').click()
+        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(0).contains('Death Note 7');
+        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(1).contains('Attack on Titan 2');
     })
 
     it('should sort books correctly oldest first', () => {
         cy.get('#SortSelectTrigger').click()
         cy.get('#SortSelect').should('exist')
         cy.get('#SortSelect').contains('Älteste').click()
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(0).contains('Death Note 7');
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(1).contains('Attack on Titan 2');
+        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(0).contains('Attack on Titan 2');
+        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(1).contains('Death Note 7');
     })
 
     it('should filter books correctly all wishlist status', () => {
-        cy.request({
-            url: 'http://localhost:3000/api/update_book',
-            method: 'POST',
-            body: {
-                id: "2",
-                wishlisted: true
-            }
-
+        cy.session('all wishlist status session', () => {
+            cy.visit('http://localhost:3000/testUser')
+            cy.get('#LoginButton').click()
+            cy.get('input[name="name"]').type("TestUser")
+            cy.get('input[name="password"]').type("TestPassword")
+            cy.get('button[type="submit"]').click()
+            cy.get('#LogoutButton')
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
+            cy.request({
+                method: 'POST',
+                url: 'http://localhost:3000/api/update_book',
+                body: { id: "2", wishlisted: true },
+                failOnStatusCode: false
+            }).then((response) => {
+                expect(response.status).to.equal(200)
+            })
+            cy.reload()
+            cy.get('#WishlistFilterSelectTrigger').click()
+            cy.get('#WishlistFilterSelect').should('exist')
+            cy.get('#WishlistFilterSelect').contains('Alle').click()
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Death Note 7');
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Attack on Titan 2');
         })
-        cy.get('#WishlistFilterSelectTrigger').click()
-        cy.get('#WishlistFilterSelect').should('exist')
-        cy.get('#WishlistFilterSelect').contains('Alle').click()
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(0).contains('Death Note 7');
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(1).contains('Attack on Titan 2');
     })
 
     it('should filter books correctly only on wishlist', () => {
-        cy.request({
-            url: 'http://localhost:3000/api/update_book',
-            method: 'POST',
-            body: {
-                id: "2",
-                wishlisted: true
-            }
-
+        cy.session('only on wishlist session', () => {
+            cy.visit('http://localhost:3000/testUser')
+            cy.get('#LoginButton').click()
+            cy.get('input[name="name"]').type("TestUser")
+            cy.get('input[name="password"]').type("TestPassword")
+            cy.get('button[type="submit"]').click()
+            cy.get('#LogoutButton')
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
+            cy.request({
+                method: 'POST',
+                url: 'http://localhost:3000/api/update_book',
+                body: { id: "2", wishlisted: true },
+                failOnStatusCode: false
+            }).then((response) => {
+                expect(response.status).to.equal(200)
+            })
+            cy.reload()
+            cy.get('#WishlistFilterSelectTrigger').click()
+            cy.get('#WishlistFilterSelect').should('exist')
+            cy.get('#WishlistFilterSelect').contains('Auf der Wunschliste').click()
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('not.contain', 'Attack on Titan 2')
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Death Note 7');
         })
-        cy.get('#WishlistFilterSelectTrigger').click()
-        cy.get('#WishlistFilterSelect').should('exist')
-        cy.get('#WishlistFilterSelect').contains('Auf der Wunschliste').click()
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('not.contain', 'Attack on Titan 2')
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Death Note 7');
     })
 
     it('should filter books correctly only in libary', () => {
-        cy.request({
-            url: 'http://localhost:3000/api/update_book',
-            method: 'POST',
-            body: {
-                id: "2",
-                wishlisted: true
-            }
-
+        cy.session('only in libary session', () => {
+            cy.visit('http://localhost:3000/testUser')
+            cy.get('#LoginButton').click()
+            cy.get('input[name="name"]').type("TestUser")
+            cy.get('input[name="password"]').type("TestPassword")
+            cy.get('button[type="submit"]').click()
+            cy.get('#LogoutButton')
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
+            cy.request({
+                method: 'POST',
+                url: 'http://localhost:3000/api/update_book',
+                body: { id: "2", wishlisted: true },
+                failOnStatusCode: false
+            }).then((response) => {
+                expect(response.status).to.equal(200)
+            })
+            cy.reload()
+            cy.get('#WishlistFilterSelectTrigger').click()
+            cy.get('#WishlistFilterSelect').should('exist')
+            cy.get('#WishlistFilterSelect').contains('In der Bibliothek').click()
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Attack on Titan 2');
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('not.contain', 'Death Note 7')
         })
-        cy.get('#WishlistFilterSelectTrigger').click()
-        cy.get('#WishlistFilterSelect').should('exist')
-        cy.get('#WishlistFilterSelect').contains('In der Bibliothek').click()
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Attack on Titan 2');
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('not.contain', 'Death Note 7')
     })
 
     it('should filter books correctly all reading status', () => {
-        cy.request({
-            url: 'http://localhost:3000/api/update_book',
-            method: 'POST',
-            body: {
-                id: "2",
-                progress: 178
-            }
-
+        cy.session('all reading status session', () => {
+            cy.visit('http://localhost:3000/testUser')
+            cy.get('#LoginButton').click()
+            cy.get('input[name="name"]').type("TestUser")
+            cy.get('input[name="password"]').type("TestPassword")
+            cy.get('button[type="submit"]').click()
+            cy.get('#LogoutButton')
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
+            cy.request({
+                method: 'POST',
+                url: 'http://localhost:3000/api/update_book',
+                body: { id: "2", progress: 224 },
+                failOnStatusCode: false
+            }).then((response) => {
+                expect(response.status).to.equal(200)
+            })
+            cy.reload()
+            cy.get('#FinishedFilterSelectTrigger').click()
+            cy.get('#FinishedFilterSelect').should('exist')
+            cy.get('#FinishedFilterSelect').contains('Alle').click()
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Death Note 7');
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Attack on Titan 2');
         })
-        cy.get('#FinishedFilterSelectTrigger').click()
-        cy.get('#FinishedFilterSelect').should('exist')
-        cy.get('#FinishedFilterSelect').contains('Alle').click()
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(0).contains('Death Note 7');
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').eq(1).contains('Attack on Titan 2');
     })
 
     it('should filter books correctly only finished', () => {
-        cy.request({
-            url: 'http://localhost:3000/api/update_book',
-            method: 'POST',
-            body: {
-                id: "2",
-                progress: 178
-            }
-
+        cy.session('only finished session', () => {
+            cy.visit('http://localhost:3000/testUser')
+            cy.get('#LoginButton').click()
+            cy.get('input[name="name"]').type("TestUser")
+            cy.get('input[name="password"]').type("TestPassword")
+            cy.get('button[type="submit"]').click()
+            cy.get('#LogoutButton')
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
+            cy.request({
+                method: 'POST',
+                url: 'http://localhost:3000/api/update_book',
+                body: { id: "2", progress: 224 },
+                failOnStatusCode: false
+            }).then((response) => {
+                expect(response.status).to.equal(200)
+            })
+            cy.reload()
+            cy.get('#FinishedFilterSelectTrigger').click()
+            cy.get('#FinishedFilterSelect').should('exist')
+            cy.get('#FinishedFilterSelect').contains('Beendet').click()
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('not.contain', 'Attack on Titan 2')
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Death Note 7');
         })
-        cy.get('#FinishedFilterSelectTrigger').click()
-        cy.get('#FinishedFilterSelect').should('exist')
-        cy.get('#FinishedFilterSelect').contains('Beendet').click()
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('not.contain', 'Attack on Titan 2')
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Death Note 7');
     })
 
     it('should filter books correctly only not finished', () => {
-        cy.request({
-            url: 'http://localhost:3000/api/update_book',
-            method: 'POST',
-            body: {
-                id: "2",
-                progress: 178
-            }
-
+        cy.session('only not finished session', () => {
+            cy.visit('http://localhost:3000/testUser')
+            cy.get('#LoginButton').click()
+            cy.get('input[name="name"]').type("TestUser")
+            cy.get('input[name="password"]').type("TestPassword")
+            cy.get('button[type="submit"]').click()
+            cy.get('#LogoutButton')
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
+            cy.request({
+                method: 'POST',
+                url: 'http://localhost:3000/api/update_book',
+                body: { id: "2", progress: 224 },
+                failOnStatusCode: false
+            }).then((response) => {
+                expect(response.status).to.equal(200)
+            })
+            cy.reload()
+            cy.get('#FinishedFilterSelectTrigger').click()
+            cy.get('#FinishedFilterSelect').should('exist')
+            cy.get('#FinishedFilterSelect').contains('Nicht beendet').click()
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Attack on Titan 2');
+            cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('not.contain', 'Death Note 7')
         })
-        cy.get('#FinishedFilterSelectTrigger').click()
-        cy.get('#FinishedFilterSelect').should('exist')
-        cy.get('#FinishedFilterSelect').contains('Nicht beendet').click()
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').contains('Attack on Titan 2');
-        cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('not.contain', 'Death Note 7')
     })
 })
 

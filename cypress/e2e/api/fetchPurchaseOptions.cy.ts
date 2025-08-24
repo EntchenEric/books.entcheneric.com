@@ -8,7 +8,7 @@ describe("fetch purchase options route", () => {
         cy.request({
             method: 'POST',
             url: 'http://localhost:3000/api/fetch_purchase_options',
-            body: { bookId: "187" },
+            body: { bookId: "1" },
             failOnStatusCode: false
         }).then((response) => {
             expect(response.status).to.equal(200)
