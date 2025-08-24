@@ -11,13 +11,13 @@ describe("update book route", () => {
     })
 
     it('should find Book', () => {
+        login();
         cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
-
     })
 
     it('should update Book', () => {
         cy.session('update book session', () => {
-         login();
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
             cy.request({
                 method: 'POST',

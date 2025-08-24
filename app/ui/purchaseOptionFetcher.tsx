@@ -19,7 +19,6 @@ async function fetchSerpPurchaseOptions(bookId: string): Promise<PurchaseOption[
 
     if (result.ok) {
         const data: PurchaseOptionCache[] = await result.json();
-        console.log("data: ", data)
         return data.map(item => ({
             storeName: item.retailerName,
             price: formatCurrency(Number(item.price)),

@@ -7,6 +7,7 @@ describe("delete book route", () => {
     })
 
     it('should find Book', () => {
+        login();
         cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
     })
 
