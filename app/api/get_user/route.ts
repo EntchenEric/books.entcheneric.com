@@ -36,10 +36,10 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(user);
         }
         else {
-            return NextResponse.json({ message: "No user found" }, { status: 404 });
+            return NextResponse.json({ error: "No user found" }, { status: 404 });
         }
     } catch (error) {
         console.error(error)
-        return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
     }
 }

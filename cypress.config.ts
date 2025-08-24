@@ -25,6 +25,7 @@ export default defineConfig({
         async 'db:dummybook'() {
           await prisma.book.create({
             data: {
+              id: "1",
               title: "Attack on Titan 2",
               author: "Hajime Isayama",
               description: "<p> <b>Dieser einzigartige Manga um den verzweifelten Kampf der Menschheit gegen übermächtige Titanen vereint Action, Fantasy und Horror in einer mitreißenden Geschichte. Attack on Titan gilt weltweit als einer der beliebtesten Titel und sorgt auch als Anime, Realfilm und mit diversen Videospielen für Furore!</b> <br>Die Erde gehört riesigen Menschenfressern: den TITANEN! <br>Fünf Jahre nach dem Fall der Mauer Maria greifen die Titanen noch einmal die letzten Menschen an. Als sich die neuen Rekruten den Monstern entgegenstellen, wird Eren von einem Titan verschlungen. Das Ende scheint nah. <br> </p> <ul> <li>Für Leser*innen ab 16 Jahren</li> <li>Abgeschlossen in 34 Bänden</li> <li>Edle Deluxe-Edition im Hardcover erhältlich</li> <li>Mehrere Spin-off-Serien und Guidebooks</li> <li>Anime, Filme sowie diverse Videospiele</li> </ul> <p> <br> </p>",
