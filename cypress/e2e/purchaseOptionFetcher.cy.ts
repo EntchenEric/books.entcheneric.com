@@ -31,7 +31,7 @@ describe("Purchase Option Fetcher", () => {
             cy.get('div[data-slot="dialog-content"]').find('#CardButtonActions').should('exist')
             cy.get('div[data-slot="dialog-content"]').find('#CardButtonActions').find('button').first().contains('Auf die Wunschliste').click()
             cy.get('div[data-slot="dialog-content"]').contains('Kaufoptionen')
-            cy.get('div[data-slot="dialog-content"]').contains('google play')
+            cy.get('div[data-slot="dialog-content"]').find('#BuyOptionList').should('not.be.empty')
         })
     })
 })

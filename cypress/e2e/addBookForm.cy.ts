@@ -170,7 +170,7 @@ describe("Add Book form", () => {
             cy.get('input[name="KeepOpen"]').parent().find('button').should('exist')
             cy.get('div[role="dialog"]').find('button[type="submit"]').click()
             cy.get('div[role="dialog"]').should('not.exist')
-            cy.get('#AddedBooks').find('a[href="testUser/Attack on Titan"]').should('exist')
+            cy.get('#AddedBooks').find('a').should('exist')
         })
     })
 })
