@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 export default defineConfig({
   projectId: '662cgp',
   retries: 4,
+  defaultCommandTimeout: 10000,
   execTimeout: 10000,
   taskTimeout: 12000,
   pageLoadTimeout: 12000,
