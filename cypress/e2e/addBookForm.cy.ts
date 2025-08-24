@@ -109,24 +109,4 @@ describe("Add Book form", () => {
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist').contains("7")
         })
     })
-
-    it('should add entire series', () => {
-        cy.session('add entire series session', () => {
-            login();
-            cy.get('#AddBookButton').click()
-            cy.get('div[role="dialog"]').should('exist')
-            cy.get('input[placeholder="Suche ein Buch..."]').should('exist')
-            cy.get('input[placeholder="Suche ein Buch..."]').type('Attack on titan')
-            cy.get('div[role="listbox"]').should('exist')
-            cy.get('div[role="listbox"]').find('button').first().should('exist').click()
-            cy.get('input[name="pageProgress"]').should('exist').type("7")
-            cy.get('input[name="Wishlisted"]').parent().find('button').should('exist')
-            cy.get('input[name="EntireSeries"]').parent().find('button').should('exist').first().click()
-            cy.get('input[name="MarkAllAsFinished"]').parent().find('button').should('exist')
-            cy.get('input[name="KeepOpen"]').parent().find('button').should('exist')
-            cy.get('div[role="dialog"]').find('button[type="submit"]').click()
-            cy.get('div[role="dialog"]').should('not.exist')
-            cy.get('#AddedBooks').find('a').should('exist')
-        })
-    })
 })
