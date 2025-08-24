@@ -7,7 +7,7 @@ describe("fetch purchase options route", () => {
     it('should get 200 response Book', () => {
         cy.request({
             method: 'POST',
-            url: 'http://localhost:3000/api/get_user',
+            url: '/api/get_user',
             body: { url: "testUser" },
             failOnStatusCode: false
         }).then((response) => {
@@ -18,7 +18,7 @@ describe("fetch purchase options route", () => {
     it('should not find Book', () => {
         cy.request({
             method: 'POST',
-            url: 'http://localhost:3000/api/get_user',
+            url: '/api/get_user',
             body: { id: "thisUsershouldnotexist" },
             failOnStatusCode: false
         }).then((response) => {

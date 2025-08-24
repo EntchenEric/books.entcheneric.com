@@ -10,6 +10,7 @@ export default defineConfig({
   taskTimeout: 12000,
   pageLoadTimeout: 12000,
   e2e: {
+    baseUrl: "http://localhost:3000",
     setupNodeEvents(on, config) {
       on('task', {
         async 'db:seed'() {

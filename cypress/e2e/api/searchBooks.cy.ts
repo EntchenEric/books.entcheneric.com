@@ -7,7 +7,7 @@ describe("Search books", () => {
     it('should return 200 response', () => {
         cy.request({
             method: 'POST',
-            url: 'http://localhost:3000/api/search_books',
+            url: '/api/search_books',
             body: { 
                 userId: "2",
                 query: "book"

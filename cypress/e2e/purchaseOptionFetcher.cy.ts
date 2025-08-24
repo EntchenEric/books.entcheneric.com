@@ -1,28 +1,14 @@
+import { login } from "./helper.cy";
+
 describe("Purchase Option Fetcher", () => {
     beforeEach(() => {
         cy.task('db:seed');
         cy.task('db:dummybook');
     })
 
-    it('should handle login', () => {
-        cy.session('User session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
-        })
-    })
-
     it('should load buy options correctly', () => {
         cy.session('load buy options session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist').click();
             cy.get('div[data-slot="dialog-content"]').should('exist')
             cy.get('div[data-slot="dialog-content"]').find('img[alt="Attack on Titan 2 Cover"]').should('exist')

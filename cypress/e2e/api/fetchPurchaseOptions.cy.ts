@@ -7,7 +7,7 @@ describe("fetch purchase options route", () => {
     it('should get 200 response Book', () => {
         cy.request({
             method: 'POST',
-            url: 'http://localhost:3000/api/fetch_purchase_options',
+            url: '/api/fetch_purchase_options',
             body: { bookId: "1" },
             failOnStatusCode: false
         }).then((response) => {
@@ -18,7 +18,7 @@ describe("fetch purchase options route", () => {
     it('should not find Book', () => {
         cy.request({
             method: 'POST',
-            url: 'http://localhost:3000/api/fetch_purchase_options',
+            url: '/api/fetch_purchase_options',
             body: { bookId: "187" },
             failOnStatusCode: false
         }).then((response) => {

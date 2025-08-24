@@ -1,27 +1,13 @@
+import { login } from "./helper.cy";
+
 describe("Add Book form", () => {
     beforeEach(() => {
         cy.task('db:seed');
     })
 
-    it('should handle login', () => {
-        cy.session('User session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
-        })
-    })
-
     it('should render form correctly', () => {
         cy.session('render session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('input[placeholder="Suche ein Buch..."]').should('exist')
@@ -33,12 +19,7 @@ describe("Add Book form", () => {
 
     it('should select book correctly', () => {
         cy.session('select book session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('input[placeholder="Suche ein Buch..."]').should('exist')
@@ -55,12 +36,7 @@ describe("Add Book form", () => {
 
     it('should add book correctly', () => {
         cy.session('add book session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('input[placeholder="Suche ein Buch..."]').should('exist')
@@ -79,12 +55,7 @@ describe("Add Book form", () => {
 
     it('should keep dialog open', () => {
         cy.session('keep dialog open session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('input[placeholder="Suche ein Buch..."]').should('exist')
@@ -103,12 +74,7 @@ describe("Add Book form", () => {
 
     it('should add wishlisted', () => {
         cy.session('addwishlisted session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('input[placeholder="Suche ein Buch..."]').should('exist')
@@ -127,12 +93,7 @@ describe("Add Book form", () => {
 
     it('should add with page progress', () => {
         cy.session('add with page progress session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('input[placeholder="Suche ein Buch..."]').should('exist')
@@ -151,12 +112,7 @@ describe("Add Book form", () => {
 
     it('should add entire series', () => {
         cy.session('add entire series session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddBookButton').click()
             cy.get('div[role="dialog"]').should('exist')
             cy.get('input[placeholder="Suche ein Buch..."]').should('exist')

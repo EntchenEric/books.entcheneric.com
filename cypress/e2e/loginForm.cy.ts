@@ -1,10 +1,12 @@
+import { login } from "./helper.cy";
+
 describe("Login", () => {
     beforeEach(() => {
         cy.task('db:seed');
     })
 
     it('should display Login correctly', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]')
         cy.get('input[name="password"]')
@@ -13,17 +15,12 @@ describe("Login", () => {
 
     it('should handle login', () => {
         cy.session('User session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
         })
     })
 
     it('should handle invalid credentials', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]').type("invalidUser")
         cy.get('input[name="password"]').type("invalidPassword")
@@ -38,7 +35,7 @@ describe("Password", () => {
     })
 
     it('should handle short password', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]').type("invalidUser")
         cy.get('input[name="password"]').type("a")
@@ -49,7 +46,7 @@ describe("Password", () => {
     })
 
     it('should handle long password', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]').type("invalidUser")
         cy.get('input[name="password"]').type('a'.repeat(128))
@@ -60,7 +57,7 @@ describe("Password", () => {
     })
 
     it('should handle no password', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]').type("invalidUser")
         cy.get('button[type="submit"]').click()
@@ -76,7 +73,7 @@ describe("Name", () => {
     })
 
     it('should handle short name', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]').type("a")
         cy.get('input[name="password"]').type("invalidPassword")
@@ -87,7 +84,7 @@ describe("Name", () => {
     })
 
     it('should handle long name', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]').type('a'.repeat(128))
         cy.get('input[name="password"]').type('invalidPassword')
@@ -98,7 +95,7 @@ describe("Name", () => {
     })
 
     it('should handle invalid name', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]').type("b%///\\\\\//2929.::,,,;;,,;;***++*##+*")
         cy.get('input[name="password"]').type('invalidPassword')
@@ -109,7 +106,7 @@ describe("Name", () => {
     })
 
     it('should handle register name', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]').type("register")
         cy.get('input[name="password"]').type('invalidPassword')

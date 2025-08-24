@@ -1,30 +1,16 @@
+import { login } from "../helper.cy";
+
 describe("update user route", () => {
     beforeEach(() => {
         cy.task('db:seed');
     })
 
-    it('should handle login', () => {
-        cy.session('User session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
-        })
-    })
-
     it('should update user Information', () => {
         cy.session('find book session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.request({
                 method: 'POST',
-                url: 'http://localhost:3000/api/update_user',
+                url: '/api/update_user',
                 body: {
                     title: "testTitle",
                     description: "testDescription"
@@ -42,7 +28,7 @@ describe("update user route", () => {
     it('should return 401 if not logged in', () => {
         cy.request({
             method: 'POST',
-            url: 'http://localhost:3000/api/update_book',
+            url: '/api/update_book',
             body: {
                 title: "testTitle",
                 description: "testDescription"

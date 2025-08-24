@@ -4,7 +4,7 @@ describe("LoginButton", () => {
     })
 
     it('should open Login Form', () => {
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#LoginButton').click()
         cy.get('input[name="name"]')
         cy.get('input[name="password"]')

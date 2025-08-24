@@ -1,28 +1,14 @@
+import { login } from "./helper.cy";
+
 describe("Book Card", () => {
     beforeEach(() => {
         cy.task('db:seed');
         cy.task('db:dummybook');
     })
 
-    it('should handle login', () => {
-        cy.session('User session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
-        })
-    })
-
     it('should render correctly', () => {
         cy.session('render session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist');
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').find('div[data-slot="card-title"]').should('exist')
                 .contains('Attack on Titan 2').contains('Hajime Isayama')
@@ -36,12 +22,7 @@ describe("Book Card", () => {
 
     it('should render dialog correctly', () => {
         cy.session('render dialog session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist').click();
             cy.get('div[data-slot="dialog-content"]').should('exist')
             cy.get('div[data-slot="dialog-content"]').find('img[alt="Attack on Titan 2 Cover"]').should('exist')
@@ -56,12 +37,7 @@ describe("Book Card", () => {
 
     it('should add book to wishlist correctly', () => {
         cy.session('add to wishlist session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist').click();
             cy.get('div[data-slot="dialog-content"]').should('exist')
             cy.get('div[data-slot="dialog-content"]').find('img[alt="Attack on Titan 2 Cover"]').should('exist')
@@ -77,12 +53,7 @@ describe("Book Card", () => {
 
     it('should set page progress correctly', () => {
         cy.session('set page progress session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist').click();
             cy.get('div[data-slot="dialog-content"]').should('exist')
             cy.get('div[data-slot="dialog-content"]').find('img[alt="Attack on Titan 2 Cover"]').should('exist')
@@ -98,12 +69,7 @@ describe("Book Card", () => {
 
     it('should delete book correctly', () => {
         cy.session('delete book session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist').click();
             cy.get('div[data-slot="dialog-content"]').should('exist')
             cy.get('div[data-slot="dialog-content"]').find('img[alt="Attack on Titan 2 Cover"]').should('exist')
@@ -120,12 +86,7 @@ describe("Book Card", () => {
 
     it('should cancel delete book correctly', () => {
         cy.session('cancel delete book session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist').click();
             cy.get('div[data-slot="dialog-content"]').should('exist')
             cy.get('div[data-slot="dialog-content"]').find('img[alt="Attack on Titan 2 Cover"]').should('exist')
@@ -143,12 +104,7 @@ describe("Book Card", () => {
 
     it('should load buy options correctly', () => {
         cy.session('load buy options session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist').click();
             cy.get('div[data-slot="dialog-content"]').should('exist')
             cy.get('div[data-slot="dialog-content"]').find('img[alt="Attack on Titan 2 Cover"]').should('exist')

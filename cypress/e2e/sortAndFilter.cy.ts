@@ -1,9 +1,11 @@
+import { login } from "./helper.cy";
+
 describe("Sort and Filter", () => {
     beforeEach(() => {
         cy.task('db:seed');
         cy.task('db:dummybook');
         cy.task('db:dummybook2')
-        cy.visit('http://localhost:3000/testUser')
+        cy.visit('/testUser')
         cy.get('#SortAndFilter').should('exist')
     })
 
@@ -56,16 +58,11 @@ describe("Sort and Filter", () => {
 
     it('should filter books correctly all wishlist status', () => {
         cy.session('all wishlist status session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+           login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
             cy.request({
                 method: 'POST',
-                url: 'http://localhost:3000/api/update_book',
+                url: '/api/update_book',
                 body: { id: "2", wishlisted: true },
                 failOnStatusCode: false
             }).then((response) => {
@@ -82,16 +79,11 @@ describe("Sort and Filter", () => {
 
     it('should filter books correctly only on wishlist', () => {
         cy.session('only on wishlist session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+           login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
             cy.request({
                 method: 'POST',
-                url: 'http://localhost:3000/api/update_book',
+                url: '/api/update_book',
                 body: { id: "2", wishlisted: true },
                 failOnStatusCode: false
             }).then((response) => {
@@ -108,16 +100,11 @@ describe("Sort and Filter", () => {
 
     it('should filter books correctly only in libary', () => {
         cy.session('only in libary session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
             cy.request({
                 method: 'POST',
-                url: 'http://localhost:3000/api/update_book',
+                url: '/api/update_book',
                 body: { id: "2", wishlisted: true },
                 failOnStatusCode: false
             }).then((response) => {
@@ -134,16 +121,11 @@ describe("Sort and Filter", () => {
 
     it('should filter books correctly all reading status', () => {
         cy.session('all reading status session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
             cy.request({
                 method: 'POST',
-                url: 'http://localhost:3000/api/update_book',
+                url: '/api/update_book',
                 body: { id: "2", progress: 224 },
                 failOnStatusCode: false
             }).then((response) => {
@@ -160,16 +142,11 @@ describe("Sort and Filter", () => {
 
     it('should filter books correctly only finished', () => {
         cy.session('only finished session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
             cy.request({
                 method: 'POST',
-                url: 'http://localhost:3000/api/update_book',
+                url: '/api/update_book',
                 body: { id: "2", progress: 224 },
                 failOnStatusCode: false
             }).then((response) => {
@@ -186,16 +163,11 @@ describe("Sort and Filter", () => {
 
     it('should filter books correctly only not finished', () => {
         cy.session('only not finished session', () => {
-            cy.visit('http://localhost:3000/testUser')
-            cy.get('#LoginButton').click()
-            cy.get('input[name="name"]').type("TestUser")
-            cy.get('input[name="password"]').type("TestPassword")
-            cy.get('button[type="submit"]').click()
-            cy.get('#LogoutButton')
+            login();
             cy.get('#AddedBooks').find('div[data-slot="dialog-trigger"]').should('exist')
             cy.request({
                 method: 'POST',
-                url: 'http://localhost:3000/api/update_book',
+                url: '/api/update_book',
                 body: { id: "2", progress: 224 },
                 failOnStatusCode: false
             }).then((response) => {
