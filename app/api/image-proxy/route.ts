@@ -1,4 +1,6 @@
+import { error } from 'console';
 import { NextRequest, NextResponse } from 'next/server';
+import { parse } from 'path';
 
 export async function GET(request: NextRequest) {
   const imageUrl = request.nextUrl.searchParams.get('url');
@@ -8,6 +10,14 @@ export async function GET(request: NextRequest) {
       { error: 'Image URL is required' },
       { status: 400 }
     );
+  }
+
+  const parsedUrl = new URL(imageUrl)
+
+  if (parsedUrl.hostname != 'books.google.com') {
+    return NextResponse.json(
+      {error: "Only google.books images are allowed."}
+    )
   }
 
   try {
@@ -30,9 +40,6 @@ export async function GET(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error(error);
-
-    const message = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(
       { error: 'Internal Server Error.' },
       { status: 500 }

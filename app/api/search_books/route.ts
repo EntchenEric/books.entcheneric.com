@@ -33,7 +33,6 @@ export async function POST(request: NextRequest) {
             
             const response = await fetch(url);
             if (!response.ok) {
-                console.error("Google Books API error:", await response.text());
                 break; 
             }
 
@@ -57,7 +56,6 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
-        console.error(error);
         return NextResponse.json({ message: "Internal server error" }, { status: 500 });
     }
 }

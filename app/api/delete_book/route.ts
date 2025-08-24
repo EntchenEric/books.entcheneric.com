@@ -49,7 +49,6 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ message: "Book deleted successfully" });
     } catch (error) {
-        console.error(error)
         return NextResponse.json({ message: "Internal server error" }, { status: 500 })
     }
 }
