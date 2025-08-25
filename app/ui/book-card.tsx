@@ -3,7 +3,7 @@ import { Book } from "../lib/definitions";
 import { CheckIcon, StarFilledIcon, TrashIcon, Pencil1Icon, StarIcon } from "@radix-ui/react-icons"
 import { ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import PurchaseOptionsFetcher from "./purchaseOptionFetcher";
+import PurchaseOptionsFetcher from "./purchase-option-fetcher";
 import {
     Dialog,
     DialogContent,
