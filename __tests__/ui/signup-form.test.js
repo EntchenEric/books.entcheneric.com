@@ -7,6 +7,10 @@ jest.mock('../../app/actions/auth', () => ({
     signup: jest.fn(),
 }))
 
+jest.mock('lucide-react', () => ({
+    ...jest.requireActual('lucide-react'),
+    Loader2: () => <div data-testid="loader" />,
+}));
 describe('SignupForm Component', () => {
     beforeEach(() => {
         jest.clearAllMocks()
@@ -15,7 +19,6 @@ describe('SignupForm Component', () => {
     it('should render the form and submit data successfully', async () => {
         const user = userEvent.setup()
         signup.mockResolvedValueOnce({ success: true })
-
         render(<SignupForm />)
 
         await user.type(screen.getByLabelText(/name/i), 'John Doe')

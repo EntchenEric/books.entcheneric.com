@@ -7,6 +7,12 @@ jest.mock('../../app/actions/auth', () => ({
     login: jest.fn(),
 }))
 
+jest.mock('lucide-react', () => ({
+    ...jest.requireActual('lucide-react'),
+    Loader2: () => <div data-testid="loader" />,
+    AlertCircle: () => <div data-testid="alert-icon" />,
+}));
+
 describe('LoginForm Component', () => {
     beforeEach(() => {
         jest.clearAllMocks()
