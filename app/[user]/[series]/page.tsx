@@ -12,8 +12,8 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
-import SortAndFilter from "@/app/ui/profile/sortAndFilter"
-import BookDisplay from "@/app/ui/profile/bookDisplay"
+import SortAndFilter from "@/app/ui/profile/sort-and-filter"
+import BookDisplay from "@/app/ui/profile/book-display"
 import ProfilePageSkeleton from "@/app/ui/profile/skeleton"
 
 type SeriesPageProps = {

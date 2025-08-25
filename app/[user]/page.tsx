@@ -14,8 +14,8 @@ import {
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import ProfilePageSkeleton from "@/app/ui/profile/skeleton"
-import SortAndFilter from "../ui/profile/sortAndFilter"
-import BookDisplay from "../ui/profile/bookDisplay"
+import SortAndFilter from "../ui/profile/sort-and-filter"
+import BookDisplay from "../ui/profile/book-display"
 
 type ProfilePageProps = {
     readonly params: Promise<{ user: string }>;
