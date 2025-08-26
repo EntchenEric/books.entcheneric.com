@@ -1,167 +1,214 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testExecutions version="1">
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/login-form.test.js">
-    <testCase name="LoginForm Component should render the form and submit data successfully" duration="454"/>
-    <testCase name="LoginForm Component should display server-side validation errors for name and password" duration="317"/>
-    <testCase name="LoginForm Component should show a loading spinner while submitting" duration="181"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/signup-form.test.js">
-    <testCase name="SignupForm Component should render the form and submit data successfully" duration="452"/>
-    <testCase name="SignupForm Component should display server-side validation errors" duration="198"/>
-    <testCase name="SignupForm Component should show a loading spinner while submitting" duration="232"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/themeSwitch.test.js">
-    <testCase name="ThemeSwitcher should render the theme switcher button" duration="113"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;light&quot; when the &quot;Light&quot; option is clicked" duration="230"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;dark&quot; when the &quot;Dark&quot; option is clicked" duration="227"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;system&quot; when the &quot;System&quot; option is clicked" duration="159"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;high-contrast&quot; when the &quot;High Contrast&quot; option is clicked" duration="132"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;high-contrast-dark&quot; when the &quot;High Contrast Dark&quot; option is clicked" duration="144"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;crimson-red&quot; when the &quot;Crimson Red&quot; option is clicked" duration="177"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;ocean-blue&quot; when the &quot;Ocean Blue&quot; option is clicked" duration="134"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;hacker-green&quot; when the &quot;Hacker Green&quot; option is clicked" duration="109"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;fluffy-pink&quot; when the &quot;Fluffy Pink&quot; option is clicked" duration="184"/>
-    <testCase name="ThemeSwitcher should call setTheme with &quot;baby-blue&quot; when the &quot;Baby Blue&quot; option is clicked" duration="120"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/add-book-form.test.js">
-    <testCase name="AddBookForm Component should submit the form successfully and call the addBook prop" duration="268"/>
-    <testCase name="AddBookForm Component should handle server-side errors on submission" duration="75"/>
-    <testCase name="AddBookForm Component should disable progress input when wishlist is checked" duration="88"/>
-    <testCase name="AddBookForm Component should show &quot;mark all as finished&quot; when &quot;add series&quot; is checked" duration="144"/>
+    <testCase name="LoginForm Component should render the form and submit data successfully" duration="347"/>
+    <testCase name="LoginForm Component should display server-side validation errors for name and password" duration="239"/>
+    <testCase name="LoginForm Component should show a loading spinner while submitting" duration="199"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/dropdown-menu.test.js">
-    <testCase name="DropdownMenu Component should open, handle item clicks, and close the menu" duration="312"/>
-    <testCase name="DropdownMenu Component should toggle checkbox items correctly" duration="333"/>
-    <testCase name="DropdownMenu Component should handle radio item selection correctly" duration="315"/>
+    <testCase name="DropdownMenu Component should open, handle item clicks, and close the menu" duration="384"/>
+    <testCase name="DropdownMenu Component should toggle checkbox items correctly" duration="294"/>
+    <testCase name="DropdownMenu Component should handle radio item selection correctly" duration="304"/>
   </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/popover.test.js">
-    <testCase name="Popover Component should open on trigger click and close on a subsequent click" duration="217"/>
-    <testCase name="Popover Component should close when a user clicks outside the popover content" duration="80"/>
-    <testCase name="Popover Component should close when the Escape key is pressed" duration="51"/>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/themeSwitch.test.js">
+    <testCase name="ThemeSwitcher should render the theme switcher button" duration="156"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;light&quot; when the &quot;Light&quot; option is clicked" duration="223"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;dark&quot; when the &quot;Dark&quot; option is clicked" duration="147"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;system&quot; when the &quot;System&quot; option is clicked" duration="127"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;high-contrast&quot; when the &quot;High Contrast&quot; option is clicked" duration="126"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;high-contrast-dark&quot; when the &quot;High Contrast Dark&quot; option is clicked" duration="125"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;crimson-red&quot; when the &quot;Crimson Red&quot; option is clicked" duration="136"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;ocean-blue&quot; when the &quot;Ocean Blue&quot; option is clicked" duration="133"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;hacker-green&quot; when the &quot;Hacker Green&quot; option is clicked" duration="126"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;fluffy-pink&quot; when the &quot;Fluffy Pink&quot; option is clicked" duration="136"/>
+    <testCase name="ThemeSwitcher should call setTheme with &quot;baby-blue&quot; when the &quot;Baby Blue&quot; option is clicked" duration="86"/>
   </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/command.test.js">
-    <testCase name="Command Component should open, filter items, and select an item with a click" duration="349"/>
-    <testCase name="Command Component should display the empty state when no items match" duration="120"/>
-    <testCase name="Command Component should navigate with arrow keys and select with Enter" duration="63"/>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/add-book-form.test.js">
+    <testCase name="AddBookForm Component should submit the form successfully and call the addBook prop" duration="286"/>
+    <testCase name="AddBookForm Component should handle server-side errors on submission" duration="64"/>
+    <testCase name="AddBookForm Component should disable progress input when wishlist is checked" duration="74"/>
+    <testCase name="AddBookForm Component should show &quot;mark all as finished&quot; when &quot;add series&quot; is checked" duration="163"/>
   </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/book-card.test.js">
-    <testCase name="BookCard Component should render the card and handle wishlisting" duration="274"/>
-    <testCase name="BookCard Component should update page progress" duration="121"/>
-    <testCase name="BookCard Component should handle deleting the book" duration="74"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/logout-button.test.js">
-    <testCase name="LogoutButton Component should open the alert dialog when the logout button is clicked" duration="127"/>
-    <testCase name="LogoutButton Component should close the dialog when the cancel button is clicked" duration="66"/>
-    <testCase name="LogoutButton Component should call deleteSession and toast.promise on confirmation" duration="73"/>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/signup-form.test.js">
+    <testCase name="SignupForm Component should render the form and submit data successfully" duration="363"/>
+    <testCase name="SignupForm Component should display server-side validation errors" duration="211"/>
+    <testCase name="SignupForm Component should show a loading spinner while submitting" duration="170"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/add-book-button.test.js">
-    <testCase name="AddBookButton Component should open the dialog and switch between search and add-book views" duration="225"/>
-    <testCase name="AddBookButton Component should call the addBook prop and close the dialog when a book is added" duration="127"/>
+    <testCase name="AddBookButton Component should open the dialog and switch between search and add-book views" duration="285"/>
+    <testCase name="AddBookButton Component should call the addBook prop and close the dialog when a book is added" duration="142"/>
     <testCase name="AddBookButton Component should keep the dialog open if the &quot;keep open&quot; checkbox is checked" duration="156"/>
   </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/form.test.js">
-    <testCase name="Generic Form Components should render correctly and link elements with ARIA attributes on initial load" duration="44"/>
-    <testCase name="Generic Form Components should display a validation error message and update ARIA attributes upon invalid submission" duration="64"/>
-    <testCase name="Generic Form Components should not display an error and should call onSubmit with valid data" duration="65"/>
-    <testCase name="Generic Form Components should clear the error message after correcting an invalid input" duration="244"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/login-button.test.js">
-    <testCase name="LoginButton Component should open the login dialog when the button is clicked" duration="154"/>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/command.test.js">
+    <testCase name="Command Component should open, filter items, and select an item with a click" duration="221"/>
+    <testCase name="Command Component should display the empty state when no items match" duration="116"/>
+    <testCase name="Command Component should navigate with arrow keys and select with Enter" duration="86"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/book-search.test.js">
-    <testCase name="BookSearch Component should search for books and display the results after a delay" duration="170"/>
-    <testCase name="BookSearch Component should handle selecting a book from the results" duration="95"/>
-    <testCase name="BookSearch Component should display an empty list when no books are found" duration="84"/>
+    <testCase name="BookSearch Component should search for books and display the results after a delay" duration="202"/>
+    <testCase name="BookSearch Component should handle selecting a book from the results" duration="149"/>
+    <testCase name="BookSearch Component should display an empty list when no books are found" duration="83"/>
   </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/alert-dialog.test.js">
-    <testCase name="AlertDialog Component should open, display content, and close via the cancel button" duration="185"/>
-    <testCase name="AlertDialog Component should trigger the action and close when the action button is clicked" duration="73"/>
-    <testCase name="AlertDialog Component should close when the Escape key is pressed" duration="90"/>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/book-card.test.js">
+    <testCase name="BookCard Component should render the card and handle wishlisting" duration="138"/>
+    <testCase name="BookCard Component should update page progress" duration="115"/>
+    <testCase name="BookCard Component should handle deleting the book" duration="66"/>
   </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/select.test.js">
-    <testCase name="Select Component should open, select an option, and update the value correctly" duration="102"/>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/logout-button.test.js">
+    <testCase name="LogoutButton Component should open the alert dialog when the logout button is clicked" duration="123"/>
+    <testCase name="LogoutButton Component should close the dialog when the cancel button is clicked" duration="94"/>
+    <testCase name="LogoutButton Component should call deleteSession and toast.promise on confirmation" duration="79"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/form.test.js">
+    <testCase name="Generic Form Components should render correctly and link elements with ARIA attributes on initial load" duration="69"/>
+    <testCase name="Generic Form Components should display a validation error message and update ARIA attributes upon invalid submission" duration="99"/>
+    <testCase name="Generic Form Components should not display an error and should call onSubmit with valid data" duration="81"/>
+    <testCase name="Generic Form Components should clear the error message after correcting an invalid input" duration="132"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/popover.test.js">
+    <testCase name="Popover Component should open on trigger click and close on a subsequent click" duration="165"/>
+    <testCase name="Popover Component should close when a user clicks outside the popover content" duration="81"/>
+    <testCase name="Popover Component should close when the Escape key is pressed" duration="59"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/dialog.test.js">
-    <testCase name="Dialog Component should open and close with the trigger and footer button" duration="156"/>
-    <testCase name="Dialog Component should close when the Escape key is pressed" duration="54"/>
-    <testCase name="Dialog Component should close when clicking the default X close button" duration="104"/>
+    <testCase name="Dialog Component should open and close with the trigger and footer button" duration="164"/>
+    <testCase name="Dialog Component should close when the Escape key is pressed" duration="73"/>
+    <testCase name="Dialog Component should close when clicking the default X close button" duration="63"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/alert-dialog.test.js">
+    <testCase name="AlertDialog Component should open, display content, and close via the cancel button" duration="170"/>
+    <testCase name="AlertDialog Component should trigger the action and close when the action button is clicked" duration="98"/>
+    <testCase name="AlertDialog Component should close when the Escape key is pressed" duration="72"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/login-button.test.js">
+    <testCase name="LoginButton Component should open the login dialog when the button is clicked" duration="155"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/api/image-proxy/route.test.js">
+    <testCase name="GET /api/image-proxy should successfully proxy a valid image from Google Books" duration="11"/>
+    <testCase name="GET /api/image-proxy should return a 400 error if the &quot;url&quot; parameter is missing" duration="2"/>
+    <testCase name="GET /api/image-proxy should return a 500 error if the image fetch fails" duration="9"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/tooltip.test.js">
-    <testCase name="Tooltip should be hidden on initial render" duration="54"/>
-    <testCase name="Tooltip should show on hover and hide on unhover" duration="125"/>
+    <testCase name="Tooltip should be hidden on initial render" duration="51"/>
+    <testCase name="Tooltip should show on hover and hide on unhover" duration="102"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/checkbox.test.js">
-    <testCase name="Checkbox Component should toggle between checked and unchecked states when clicked" duration="504"/>
-    <testCase name="Checkbox Component should be checked when associated label is clicked" duration="73"/>
-    <testCase name="Checkbox Component should be disabled when the disabled prop is true" duration="49"/>
+    <testCase name="Checkbox Component should toggle between checked and unchecked states when clicked" duration="115"/>
+    <testCase name="Checkbox Component should be checked when associated label is clicked" duration="37"/>
+    <testCase name="Checkbox Component should be disabled when the disabled prop is true" duration="21"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/button.test.js">
-    <testCase name="Button Component should render a button and handle clicks" duration="365"/>
-    <testCase name="Button Component should be disabled when the disabled prop is true" duration="84"/>
-    <testCase name="Button Component should render with the default variant" duration="27"/>
-    <testCase name="Button Component should render with the destructive variant" duration="9"/>
-    <testCase name="Button Component should render with the outline variant" duration="10"/>
-    <testCase name="Button Component should render with the secondary variant" duration="9"/>
-    <testCase name="Button Component should render with the ghost variant" duration="58"/>
-    <testCase name="Button Component should render with the link variant" duration="22"/>
-    <testCase name="Button Component should render with the default size" duration="10"/>
-    <testCase name="Button Component should render with the sm size" duration="12"/>
-    <testCase name="Button Component should render with the lg size" duration="7"/>
-    <testCase name="Button Component should render with the icon size" duration="8"/>
-    <testCase name="Button Component should render as a different component when asChild is true" duration="11"/>
+    <testCase name="Button Component should render a button and handle clicks" duration="69"/>
+    <testCase name="Button Component should be disabled when the disabled prop is true" duration="20"/>
+    <testCase name="Button Component should render with the default variant" duration="7"/>
+    <testCase name="Button Component should render with the destructive variant" duration="6"/>
+    <testCase name="Button Component should render with the outline variant" duration="7"/>
+    <testCase name="Button Component should render with the secondary variant" duration="13"/>
+    <testCase name="Button Component should render with the ghost variant" duration="6"/>
+    <testCase name="Button Component should render with the link variant" duration="6"/>
+    <testCase name="Button Component should render with the default size" duration="7"/>
+    <testCase name="Button Component should render with the sm size" duration="8"/>
+    <testCase name="Button Component should render with the lg size" duration="12"/>
+    <testCase name="Button Component should render with the icon size" duration="6"/>
+    <testCase name="Button Component should render as a different component when asChild is true" duration="14"/>
   </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/sonner.test.js">
-    <testCase name="Sonner should send toast" duration="44"/>
-    <testCase name="Sonner should send toast with description" duration="8"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/progress.test.js">
-    <testCase name="Progress Component should render the progress bar with the correct value" duration="47"/>
-    <testCase name="Progress Component should default to 0 when no value is provided" duration="6"/>
-    <testCase name="Progress Component should update the progress when the value prop changes" duration="12"/>
-    <testCase name="Progress Component should handle a value of 0 correctly" duration="5"/>
-    <testCase name="Progress Component should handle a value of 100 correctly" duration="11"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/purchase-option-fetcher.test.js">
-    <testCase name="PurchaseOptionsFetcher Component should show a loading state initially, then display fetched purchase options" duration="131"/>
-    <testCase name="PurchaseOptionsFetcher Component should display a message when no purchase options are found" duration="19"/>
-    <testCase name="PurchaseOptionsFetcher Component should display an error message if fetching fails" duration="11"/>
-    <testCase name="PurchaseOptionsFetcher Component should render nothing if the book is not wishlisted" duration="3"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/input.test.js">
-    <testCase name="Input Component should render and allow text to be entered" duration="98"/>
-    <testCase name="Input Component should be disabled when the disabled prop is true" duration="3"/>
-    <testCase name="Input Component should apply custom class names" duration="3"/>
-    <testCase name="Input Component should render with the correct type attribute" duration="4"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/profile/book-display.test.js">
-    <testCase name="BookDisplay Component should render books and the add button for the owner" duration="34"/>
-    <testCase name="BookDisplay Component should show the owner-specific empty state when there are no books" duration="7"/>
-    <testCase name="BookDisplay Component should show the visitor-specific empty state and hide the add button for visitors" duration="5"/>
-    <testCase name="BookDisplay Component should render a series as a link" duration="27"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/card.test.js">
-    <testCase name="Card Component should render all parts of the card with the correct content" duration="58"/>
-    <testCase name="Card Component should apply custom class names to card components" duration="7"/>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/select.test.js">
+    <testCase name="Select Component should open, select an option, and update the value correctly" duration="74"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/label.test.js">
-    <testCase name="Label Component should render its children as its content" duration="39"/>
-    <testCase name="Label Component should focus the associated input field when clicked" duration="84"/>
-    <testCase name="Label Component should apply custom class names" duration="11"/>
-  </file>
-  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/seperator.test.js">
-    <testCase name="Separator should render a horizontal separator by default" duration="22"/>
-    <testCase name="Separator should render a vertical separator when specified" duration="4"/>
-    <testCase name="Separator should apply additional custom classes" duration="2"/>
+    <testCase name="Label Component should render its children as its content" duration="20"/>
+    <testCase name="Label Component should focus the associated input field when clicked" duration="23"/>
+    <testCase name="Label Component should apply custom class names" duration="3"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/alert.test.js">
-    <testCase name="Alert Component should render a default alert with a title and description" duration="41"/>
-    <testCase name="Alert Component should render the destructive variant correctly" duration="6"/>
+    <testCase name="Alert Component should render a default alert with a title and description" duration="39"/>
+    <testCase name="Alert Component should render the destructive variant correctly" duration="35"/>
     <testCase name="Alert Component should render an icon when provided" duration="6"/>
-    <testCase name="Alert Component should apply custom class names" duration="5"/>
+    <testCase name="Alert Component should apply custom class names" duration="7"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/input.test.js">
+    <testCase name="Input Component should render and allow text to be entered" duration="141"/>
+    <testCase name="Input Component should be disabled when the disabled prop is true" duration="3"/>
+    <testCase name="Input Component should apply custom class names" duration="4"/>
+    <testCase name="Input Component should render with the correct type attribute" duration="3"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/purchase-option-fetcher.test.js">
+    <testCase name="PurchaseOptionsFetcher Component should show a loading state initially, then display fetched purchase options" duration="122"/>
+    <testCase name="PurchaseOptionsFetcher Component should display a message when no purchase options are found" duration="12"/>
+    <testCase name="PurchaseOptionsFetcher Component should display an error message if fetching fails" duration="10"/>
+    <testCase name="PurchaseOptionsFetcher Component should render nothing if the book is not wishlisted" duration="2"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/seperator.test.js">
+    <testCase name="Separator should render a horizontal separator by default" duration="25"/>
+    <testCase name="Separator should render a vertical separator when specified" duration="2"/>
+    <testCase name="Separator should apply additional custom classes" duration="2"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/ui/profile/book-display.test.js">
+    <testCase name="BookDisplay Component should render books and the add button for the owner" duration="32"/>
+    <testCase name="BookDisplay Component should show the owner-specific empty state when there are no books" duration="4"/>
+    <testCase name="BookDisplay Component should show the visitor-specific empty state and hide the add button for visitors" duration="3"/>
+    <testCase name="BookDisplay Component should render a series as a link" duration="10"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/progress.test.js">
+    <testCase name="Progress Component should render the progress bar with the correct value" duration="42"/>
+    <testCase name="Progress Component should default to 0 when no value is provided" duration="6"/>
+    <testCase name="Progress Component should update the progress when the value prop changes" duration="7"/>
+    <testCase name="Progress Component should handle a value of 0 correctly" duration="4"/>
+    <testCase name="Progress Component should handle a value of 100 correctly" duration="4"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/sonner.test.js">
+    <testCase name="Sonner should send toast" duration="45"/>
+    <testCase name="Sonner should send toast with description" duration="17"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/card.test.js">
+    <testCase name="Card Component should render all parts of the card with the correct content" duration="51"/>
+    <testCase name="Card Component should apply custom class names to card components" duration="7"/>
   </file>
   <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/components/skeleton.test.js">
-    <testCase name="Skeleton should render with the default skeleton classes" duration="34"/>
-    <testCase name="Skeleton should apply additional custom classes" duration="3"/>
-    <testCase name="Skeleton should forward other HTML attributes" duration="4"/>
+    <testCase name="Skeleton should render with the default skeleton classes" duration="24"/>
+    <testCase name="Skeleton should apply additional custom classes" duration="4"/>
+    <testCase name="Skeleton should forward other HTML attributes" duration="6"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/api/fetch_purchase_options/route.test.js">
+    <testCase name="POST /api/purchase-options should return existing purchase options if the cache is recent" duration="3"/>
+    <testCase name="POST /api/purchase-options should fetch new options if the cache is stale (more than 3 days old)" duration="2"/>
+    <testCase name="POST /api/purchase-options should return 404 if the book is not found" duration="1"/>
+    <testCase name="POST /api/purchase-options should handle external API failures gracefully when cache is stale" duration="0"/>
+    <testCase name="POST /api/purchase-options should return 500 on a database error" duration="1"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/api/get_user/route.test.js">
+    <testCase name="POST /api/user should find and return a user by URL with detailed book info" duration="4"/>
+    <testCase name="POST /api/user should find and return a user by userId with basic book info" duration="1"/>
+    <testCase name="POST /api/user should return null if a user is not found" duration="1"/>
+    <testCase name="POST /api/user should return a 404 error if no url or userId is provided" duration="1"/>
+    <testCase name="POST /api/user should return a 500 error if the database query fails" duration="1"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/api/delete_book/route.test.js">
+    <testCase name="POST /api/delete_book should delete the book if the user is authenticated and owns the book" duration="6"/>
+    <testCase name="POST /api/delete_book should return 401 Unauthorized if there is no active session" duration="2"/>
+    <testCase name="POST /api/delete_book should return 401 Unauthorized if the user does not own the book" duration="1"/>
+    <testCase name="POST /api/delete_book should return 404 Not Found if the book does not exist" duration="1"/>
+    <testCase name="POST /api/delete_book should return 500 on a database error" duration="0"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/api/update_user/route.test.js">
+    <testCase name="POST /api/update_user should return 401 if no session" duration="4"/>
+    <testCase name="POST /api/update_user should update user when session exists" duration="2"/>
+    <testCase name="POST /api/update_user should return 500 on unexpected error" duration="1"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/api/update_book/route.test.js">
+    <testCase name="POST /api/update_book should return 401 if no session" duration="5"/>
+    <testCase name="POST /api/update_book should return 404 if book not found" duration="1"/>
+    <testCase name="POST /api/update_book should return 401 if user does not own the book" duration="1"/>
+    <testCase name="POST /api/update_book should update book if user owns it" duration="1"/>
+    <testCase name="POST /api/update_book should return 500 on unexpected error" duration="1"/>
+  </file>
+  <file path="/home/entchenlaptop/Documents/books.entcheneric.com/__tests__/api/search_books/route.test.js">
+    <testCase name="POST /api/search_books should return a list of books for a basic query" duration="3"/>
+    <testCase name="POST /api/search_books should correctly add the author to the search query" duration="1"/>
+    <testCase name="POST /api/search_books should filter out books that the user already has" duration="1"/>
+    <testCase name="POST /api/search_books should fetch multiple pages if the first page has fewer than 20 results" duration="1"/>
+    <testCase name="POST /api/search_books should handle API fetch errors gracefully" duration="1"/>
+    <testCase name="POST /api/search_books should return a 500 status if the database query fails" duration="1"/>
+    <testCase name="POST /api/search_books should handle cases where the Google Books API returns no items" duration="0"/>
   </file>
 </testExecutions>
