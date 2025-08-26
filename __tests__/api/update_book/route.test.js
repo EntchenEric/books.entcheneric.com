@@ -27,7 +27,6 @@ jest.mock('@prisma/client', () => {
   return { PrismaClient: jest.fn(() => mPrisma) }
 })
 
-// helper to mock NextRequest
 function createMockRequest(body) {
   return {
     json: jest.fn().mockResolvedValue(body),
@@ -69,7 +68,7 @@ describe('POST /api/update_book', () => {
     verifySession.mockResolvedValueOnce({ userId: 1 })
     prisma.book.findUnique.mockResolvedValueOnce({
       id: 1,
-      user: { id: 2 }, // different user
+      user: { id: 2 },
     })
 
     const request = createMockRequest({ id: 1, progress: 10 })

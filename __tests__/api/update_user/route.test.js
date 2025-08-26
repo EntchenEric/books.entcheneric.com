@@ -26,7 +26,6 @@ jest.mock('@prisma/client', () => {
   return { PrismaClient: jest.fn(() => mPrisma) }
 })
 
-// helper to mock NextRequest
 function createMockRequest(body) {
   return {
     json: jest.fn().mockResolvedValue(body),
