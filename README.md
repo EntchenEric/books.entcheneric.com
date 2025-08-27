@@ -133,3 +133,4 @@ Beiträge machen die Open-Source-Community zu einem großartigen Ort zum Lernen,
 3.  Commite deine Änderungen (`git commit -m 'Add some AmazingFeature'`)
 4.  Pushe zum Branch (`git push origin feature/AmazingFeature`)
 5.  Öffne einen Pull Request
+6.  
