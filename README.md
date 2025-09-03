@@ -33,7 +33,7 @@ You need to have Node.js (v18+) and npm/yarn/pnpm installed on your machine.
 ##### Installation & Setup
 1.  **Clone the repo**
     ```sh
-    git clone [https://github.com/EntchenEric/books.entcheneric.com.git](https://github.com/EntchenEric/books.entcheneric.com.git)
+    git clone git@github.com:EntchenEric/books.entcheneric.com.git
     cd books.entcheneric.com
     ```
 2.  **Install dependencies**
@@ -100,7 +100,7 @@ Du benötigst Node.js (v18+) und npm/yarn/pnpm auf deinem Computer.
 ##### Installation & Einrichtung
 1.  **Klone das Repository**
     ```sh
-    git clone [https://github.com/EntchenEric/books.entcheneric.com.git](https://github.com/EntchenEric/books.entcheneric.com.git)
+    git clone git@github.com:EntchenEric/books.entcheneric.com.git
     cd books.entcheneric.com
     ```
 2.  **Installiere die Abhängigkeiten**
