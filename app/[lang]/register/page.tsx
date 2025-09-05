@@ -1,7 +1,7 @@
 "use client"
 
 import { Input } from "@/components/ui/input";
-import SignupForm from "../ui/signup-form";
+import SignupForm from "../../ui/signup-form";
 import { BookMarked } from "lucide-react";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";

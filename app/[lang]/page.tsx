@@ -1,24 +1,27 @@
 import { CardHeader, Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Library, BookHeart, LockKeyhole, Code2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getTranslations } from 'next-intl/server';
+import {Link} from '@/i18n/navigation';
 
-export default function Home() {
+export default async function Home() {
+  const t = await getTranslations('HomePage');
+
   return (
     <div className="w-full max-w-4xl mx-auto px-4">
-
       <header className="min-h-screen flex flex-col justify-center items-center text-center py-20">
         <BookHeart className="h-20 w-20 mb-6 text-primary" />
         <h1 className="text-5xl font-extrabold tracking-tight mb-4">
-          Deine Bücher. Dein Universum.
+          {t('title')}
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-          Verliere nie wieder den Überblick über deine Lesereise. Sammle, organisiere und entdecke deine Lieblingsbücher - alles an einem Ort.
+          {t('subtitle')}
         </p>
-        <a href="/register">
+        <Link href="/register">
           <Button size="lg" className="group">
-            Jetzt kostenlos starten <ArrowRight className="inline-block ml-2 group-hover:translate-x-1 transition-transform" />
+            {t('startFree')} <ArrowRight className="inline-block ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
-        </a>
+        </Link>
       </header>
 
       <div className="grid md:grid-cols-3 gap-8 my-20">
@@ -26,12 +29,12 @@ export default function Home() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
               <Library className="h-6 w-6 text-primary" />
-              Was ist das hier?
+              {t('faqQuestion1Title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Dein digitales Bücherregal. Trage ein, was du liest, gelesen hast oder noch auf deiner Wunschliste steht. So weißt du im Buchladen immer genau, welches Schätzchen dir in der Sammlung noch fehlt.
+              {t('faqQuestion1Answer')}
             </p>
           </CardContent>
         </Card>
@@ -40,12 +43,33 @@ export default function Home() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
               <Code2 className="h-6 w-6 text-primary" />
-              Wer steckt dahinter?
+              {t('faqQuestion2Title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Ein Hobbyprojekt von mir, mit Liebe in der Freizeit gecodet. Hier geht's nicht ums Geld, sondern um die Leidenschaft für Bücher und Code. Der Quellcode ist auf <a href="https://github.com/EntchenEric/books.entcheneric.com" className="font-semibold text-primary underline" target="_blank" rel="noopener noreferrer">GitHub</a> einsehbar. Mehr über mich? Schau auf <a href="https://entcheneric.com" className="font-semibold text-primary underline" target="_blank" rel="noopener noreferrer">meinem Portfolio</a> vorbei.
+              {t.rich('faqQuestion2Answer', {
+                githubLink: (chunks) => (
+                  <a
+                    href="https://github.com/EntchenEric/books.entcheneric.com"
+                    className="font-semibold text-primary underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {chunks}
+                  </a>
+                ),
+                portfolioLink: (chunks) => (
+                  <a
+                    href="https://entcheneric.com"
+                    className="font-semibold text-primary underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {chunks}
+                  </a>
+                ),
+              })}
             </p>
           </CardContent>
         </Card>
@@ -54,12 +78,12 @@ export default function Home() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
               <LockKeyhole className="h-6 w-6 text-primary" />
-              Und meine Daten?
+              {t('faqQuestion3Title')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Deine Daten gehören dir. Alles wird sicher gespeichert, dein Passwort natürlich verschlüsselt (gehasht). Kein Tracking, keine Weitergabe an Dritte. Versprochen.
+              {t('faqQuestion3Answer')}
             </p>
           </CardContent>
         </Card>

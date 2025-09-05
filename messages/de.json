@@ -1,0 +1,13 @@
+{
+    "HomePage": {
+        "title": "Your books, your universe.",
+        "subtitle": "Verliere nie wieder den Überblick über deine Lesereise. Sammle, organisiere und entdecke deine Lieblingsbücher - alles an einem Ort.",
+        "startFree": "Jetzt kostenlos starten",
+        "faqQuestion1Title": "Was ist das hier?",
+        "faqQuestion1Answer": "Dein digitales Bücherregal. Trage ein, was du liest, gelesen hast oder noch auf deiner Wunschliste steht. So weißt du im Buchladen immer genau, welches Schätzchen dir in der Sammlung noch fehlt.",
+        "faqQuestion2Title": "Wer steckt dahinter?",
+        "faqQuestion2Answer": "Ein Hobbyprojekt von mir, mit Liebe in der Freizeit gecodet. Hier geht's nicht ums Geld, sondern um die Leidenschaft für Bücher und Code. Der Quellcode ist auf <githubLink>GitHub</githubLink> einsehbar. Mehr über mich? Schau auf <portfolioLink>meinem Portfolio</portfolioLink> vorbei.",
+        "faqQuestion3Title": "Und meine Daten?",
+        "faqQuestion3Answer": "Deine Daten gehören dir. Alles wird sicher gespeichert, dein Passwort natürlich verschlüsselt (gehasht). Kein Tracking, keine Weitergabe an Dritte. Versprochen."
+    }
+}
