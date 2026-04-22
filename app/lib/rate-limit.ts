@@ -22,6 +22,14 @@ export function checkRateLimit(
   maxRequests: number = 5
 ): { success: boolean; remaining: number; resetTime: number } {
   const now = Date.now()
+
+  // Lazy cleanup: remove expired entries to prevent memory leaks
+  for (const [k, v] of store.entries()) {
+    if (now > v.resetTime) {
+      store.delete(k)
+    }
+  }
+
   const record = store.get(key)
 
   if (!record || now > record.resetTime) {

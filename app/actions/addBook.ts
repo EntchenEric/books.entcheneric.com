@@ -24,17 +24,9 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
         }
     }
 
-    const rawIsWishlisted = formData.get('isWishlisted');
-
-    const rawAddSeries = formData.get('addSeries');
-
-    const rawMarkAllAsFinished = formData.get('markAllAsFinished');
-
-    const isWishlisted = rawIsWishlisted === 'true';
-
-    const addSeries = rawAddSeries === 'true';
-
-    const markAllAsFinished = rawMarkAllAsFinished != undefined && rawMarkAllAsFinished === 'true';
+    const isWishlisted = formData.get('isWishlisted') === 'true';
+    const addSeries = formData.get('addSeries') === 'true';
+    const markAllAsFinished = formData.get('markAllAsFinished') === 'true';
 
 
     const validatedFields = AddBookFormSchema.safeParse({

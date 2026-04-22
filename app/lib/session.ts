@@ -67,7 +67,7 @@ export async function updateSession() {
   const cookieStore = await cookies()
   cookieStore.set('session', session, {
     httpOnly: true,
-    secure: true,
+    secure: isSecure,
     expires: expires,
     sameSite: 'lax',
     path: '/',
