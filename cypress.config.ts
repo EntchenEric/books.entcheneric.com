@@ -1,7 +1,6 @@
 import { defineConfig } from "cypress";
 import bcrypt from 'bcryptjs'
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { prisma } from './app/lib/prisma';
 
 export default defineConfig({
   projectId: '662cgp',

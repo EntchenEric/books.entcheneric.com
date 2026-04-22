@@ -1,13 +1,22 @@
 import { GoogleBooksApiResponse, BookItem } from '@/app/lib/definitions';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/prisma'
+import { SearchBooksSchema } from '@/app/lib/api-schemas';
 import { NextRequest, NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
+import { rateLimitByIp } from '@/app/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+    const limit = await rateLimitByIp('search_books', 60_000, 20)
+    if (!limit.success) {
+        return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
     try {
         const body = await request.json();
-        const { userId, query, author } = body;
+        const validated = SearchBooksSchema.safeParse(body)
+        if (!validated.success) {
+            return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+        }
+        const { userId, query, author } = validated.data
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
@@ -30,10 +39,10 @@ export async function POST(request: NextRequest) {
         while (foundBooks.length < 20 && currentPage <= maxPagesToFetch) {
             const startIndex = (currentPage - 1) * maxResults;
             const url = `${baseUrl}?q=${encodeURIComponent(q)}&key=${apiKey}&langRestrict=de&maxResults=${maxResults}&startIndex=${startIndex}`;
-            
+
             const response = await fetch(url);
             if (!response.ok) {
-                break; 
+                break;
             }
 
             const data: GoogleBooksApiResponse = await response.json();
@@ -48,7 +57,7 @@ export async function POST(request: NextRequest) {
 
             currentPage++;
         }
-        
+
         return NextResponse.json({
             kind: "books#volumes",
             totalItems: foundBooks.length,

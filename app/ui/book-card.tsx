@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { Book } from "../lib/definitions";
-import { CheckIcon, StarFilledIcon, TrashIcon, Pencil1Icon, StarIcon } from "@radix-ui/react-icons"
-import { ShoppingCart } from "lucide-react";
+import { Check, Star, Trash2, Pencil, ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import PurchaseOptionsFetcher from "./purchase-option-fetcher";
 import {
@@ -54,8 +57,8 @@ function WishlistButton({ book, setBook }: WishlistButtonProps) {
     const [loading, setLoading] = useState(false);
 
     if (loading) return <Button disabled>Lädt...</Button>
-    if (book.wishlisted) return <Button onClick={() => changeWishlistStatus(book.id, false, setBook, setLoading)}><ShoppingCart /> Als gekauft makieren</Button>
-    else return <Button onClick={() => changeWishlistStatus(book.id, true, setBook, setLoading)}><StarIcon /> Auf die Wunschliste</Button>
+    if (book.wishlisted) return <Button onClick={() => changeWishlistStatus(book.id, false, setBook, setLoading)}><ShoppingCart className="h-4 w-4 mr-2" /> Als gekauft markieren</Button>
+    else return <Button onClick={() => changeWishlistStatus(book.id, true, setBook, setLoading)}><Star className="h-4 w-4 mr-2" /> Auf die Wunschliste</Button>
 }
 
 type PageProgressInput = {
@@ -109,7 +112,7 @@ function PageProgressInput({ book, setBook }: PageProgressInput) {
             />
             <span>/{book.pages}</span>
             <Button onClick={handleSave} disabled={loading || progress === book.progress}>
-                {loading ? "Speichern..." : <><Pencil1Icon />Speichern</>}
+                {loading ? "Speichern..." : <><Pencil className="h-4 w-4 mr-1" />Speichern</>}
             </Button>
         </div>
     );
@@ -146,7 +149,7 @@ function DeleteButton({ bookId, setBook }: DeleteButtonProps) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="destructive" disabled={loading}>
-                    {loading ? "Löschen..." : <><TrashIcon />Löschen</>}
+                    {loading ? "Löschen..." : <><Trash2 className="h-4 w-4 mr-1" />Löschen</>}
                 </Button>
             </DialogTrigger>
             <DialogContent id="BookDeleteConfirmDialog">
@@ -200,18 +203,23 @@ type BookCardComponentProps = {
 export function BookCardComponent({ book, progressPercentage }: BookCardComponentProps) {
     return <Card className="p-0 h-full cursor-pointer transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:drop-shadow-gray-400 hover:drop-shadow-xl">
         <CardHeader className="p-0 relative">
-            <img
-                src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`} alt={`${book.title} Cover`}
-                className="w-full h-40 object-cover rounded-t-xl" />
+            <Image
+                src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`}
+                alt={`${book.title} Cover`}
+                width={400}
+                height={160}
+                className="w-full h-40 object-cover rounded-t-xl"
+                unoptimized
+            />
             <div className="absolute top-2 right-2 flex flex-col items-end gap-2">
                 {progressPercentage >= 100 && (
                     <span className="flex items-center gap-1 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
-                        <CheckIcon />
+                        <Check className="h-3 w-3" />
                         Gelesen
                     </span>
                 )}
                 {book.wishlisted && (
-                    <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex"><StarFilledIcon />Wunschliste</span>
+                    <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1"><Star className="h-3 w-3 fill-current" />Wunschliste</span>
                 )}
             </div>
         </CardHeader>
@@ -243,20 +251,37 @@ export default function BookCard({ frontendBook, isOwner }: BookCard) {
             : 0;
 
     if (!book) {
-        return <></>
+        return null;
     }
 
     return (
         <Dialog>
             <DialogTrigger asChild className="h-full">
-                <div className="h-full">
+                <div
+                    role="button"
+                    tabIndex={0}
+                    className="h-full cursor-pointer"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            (e.currentTarget as HTMLElement).click();
+                        }
+                    }}
+                >
                     <BookCardComponent book={book} progressPercentage={progressPercentage} />
                 </div>
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0 w-3xl">
                 <div className="flex flex-col sm:flex-row">
-                    <img src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`} alt={`${book.title} Cover`} className="w-full sm:w-1/3 h-64 sm:h-auto object-cover" />
+                    <Image
+                        src={`/api/image-proxy?url=${encodeURIComponent(book.thumbnail.replaceAll("&zoom=1", "&zoom=2"))}`}
+                        alt={`${book.title} Cover`}
+                        width={300}
+                        height={400}
+                        className="w-full sm:w-1/3 h-64 sm:h-auto object-cover"
+                        unoptimized
+                    />
                     <div className="p-6 flex-1">
                         <DialogHeader>
                             <DialogTitle className="text-3xl font-bold mb-1">{book.title}</DialogTitle>
@@ -266,19 +291,19 @@ export default function BookCard({ frontendBook, isOwner }: BookCard) {
                             </p>
                         </DialogHeader>
                         <div className="my-4">
-                            <div
-                                className="text-secondary-foreground leading-relaxed"
-                                dangerouslySetInnerHTML={{ __html: book.description || "Keine Beschreibung verfügbar." }}
-                            />
+                            <div className="text-secondary-foreground leading-relaxed whitespace-pre-wrap">
+                                {book.description || "Keine Beschreibung verfügbar."}
+                            </div>
                         </div>
                         <PurchaseOptionsFetcher book={book} />
-                        <a
+                        <Link
                             href={`https://books.google.de/books?id=${book.googleBookId}&pg=PT8&hl=de`}
-                            className="text-blue-600 hover:underline"
+                            className="text-primary hover:underline"
                             target="_blank"
+                            rel="noopener noreferrer"
                         >
                             Leseprobe
-                        </a>
+                        </Link>
                         {
                             isOwner &&
                             <div className="mt-6 pt-4 border-t grid gap-2 grid-cols-1" id="CardButtonActions">

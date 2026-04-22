@@ -36,7 +36,8 @@ export type FormState =
   | {
     errors?: {
       name?: string[],
-      password?: string[]
+      password?: string[],
+      form?: string[]
     },
     message?: string
   }
@@ -63,14 +64,14 @@ export type Book = {
   title: string,
   author: string,
   description: string | null,
-  publicationYear: string,
+  publicationYear: number,
   wishlisted: boolean,
   pages: number,
   progress: number,
   thumbnail: string,
   googleBookId: string,
   ISBNumber?: string | null,
-  user: User
+  user?: User
 }
 
 export type User = {
@@ -81,7 +82,7 @@ export type User = {
 
 export type Session = {
   isAuth: boolean,
-  userId: any
+  userId: string
 }
 
 

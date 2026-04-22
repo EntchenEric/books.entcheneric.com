@@ -18,7 +18,7 @@ model Book {
   title      String   @db.VarChar(256)
   author     String   @db.VarChar(256)
   description String? @db.VarChar(4192)
-  publicationYear Int 
+  publicationYear Int
   wishlisted Boolean  @default(true)
   pages      Int
   progress   Int      @default(0)
@@ -31,6 +31,13 @@ model Book {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   purchaseOptions PurchaseOptionCache[]
   lastPurchaseOptionUpdatedAt DateTime @default(dbgenerated("'1970-01-01 00:00:00'"))
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([googleBookId])
+  @@index([ISBNumber])
+  @@unique([googleBookId, userId])
 }
 
 model User {
@@ -39,6 +46,8 @@ model User {
   passwordHash String @db.VarChar(256)
   title         String? @db.VarChar(256)
   description   String? @db.VarChar(4192)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   books        Book[]
 }
@@ -51,4 +60,6 @@ model PurchaseOptionCache {
   retailerName String @db.VarChar(256)
   price Decimal @db.Decimal(10, 2)
   url String @db.VarChar(512)
+
+  @@index([bookId])
 }

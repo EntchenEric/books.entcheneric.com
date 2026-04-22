@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -21,7 +21,7 @@ import {
     AlertDescription,
     AlertTitle,
 } from "@/components/ui/alert"
-import { AlertCircle, Loader2 } from "lucide-react"
+import { AlertCircle, Loader2, Eye, EyeOff } from "lucide-react"
 
 type LoginFormValues = z.infer<typeof SignupFormSchema>
 
@@ -46,6 +46,7 @@ type LoginFormProps = {
 
 export default function LoginForm({name}: LoginFormProps) {
     const [isPending, startTransition] = useTransition()
+    const [showPassword, setShowPassword] = useState(false)
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(SignupFormSchema),
@@ -60,7 +61,7 @@ export default function LoginForm({name}: LoginFormProps) {
             const formData = new FormData();
             formData.append('name', values.name);
             formData.append('password', values.password);
-            
+
             const result = await login(undefined, formData);
 
             if (result?.errors) {
@@ -74,6 +75,12 @@ export default function LoginForm({name}: LoginFormProps) {
                     form.setError("password", {
                         type: "server",
                         message: result.errors.password.join(', '),
+                    })
+                }
+                if (result.errors.form) {
+                    form.setError("root", {
+                        type: "server",
+                        message: result.errors.form.join('\n'),
                     })
                 }
             }
@@ -103,24 +110,34 @@ export default function LoginForm({name}: LoginFormProps) {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Passwort</FormLabel>
-                            <FormControl>
-                                <Input type="password" {...field} />
-                            </FormControl>
+                            <div className="relative">
+                                <FormControl>
+                                    <Input type={showPassword ? "text" : "password"} {...field} />
+                                </FormControl>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                    aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+                                >
+                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
 
-                {form.formState.errors.password?.type === "server" && (
+                {(form.formState.errors.password?.type === "server" || form.formState.errors.root?.type === "server") && (
                      <Alert variant="destructive">
                         <AlertCircle className="h-4 w-4" />
-                        <AlertTitle>Das Passwort ist ungültig</AlertTitle>
+                        <AlertTitle>{form.formState.errors.password?.type === "server" ? 'Das Passwort ist ungültig' : 'Fehler'}</AlertTitle>
                         <AlertDescription>
-                            {form.formState.errors.password.message}
+                            {form.formState.errors.password?.message || form.formState.errors.root?.message}
                         </AlertDescription>
                     </Alert>
                 )}
-                
+
                 <LoginButton pending={isPending} />
             </form>
         </Form>

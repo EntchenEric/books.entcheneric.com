@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { Check, Search } from "lucide-react"
 import {
     Command,
@@ -50,15 +51,21 @@ function BookResultCard({ book, handleSelectOption, value }: BookResultCardProps
             )}
         />
         {book.volumeInfo.imageLinks?.smallThumbnail ? (
-            <img
+            <Image
                 src={book.volumeInfo.imageLinks.smallThumbnail}
                 alt={"Cover of " + book.volumeInfo.title}
-                className="mr-2 h-10 w-7 object-cover rounded"
+                width={28}
+                height={40}
+                className="mr-2 object-cover rounded"
+                unoptimized
             />
-        ) : <img
+        ) : <Image
             src={'https://books.google.com/googlebooks/images/no_cover_thumb.gif'}
             alt={"Cover of " + book.volumeInfo.title}
-            className="mr-2 h-10 w-7 object-cover rounded"
+            width={28}
+            height={40}
+            className="mr-2 object-cover rounded"
+            unoptimized
         />}
         <div className="flex flex-col min-w-0">
             <span className="font-medium truncate max-w-xs">
@@ -144,7 +151,7 @@ export default function BookSearch({ selectedBook, setSelectedBook, userId }: Bo
         return () => {
             clearTimeout(handler);
         };
-    }, [inputValue]);
+    }, [inputValue, userId]);
 
     const handleSelectOption = (option: BookItem) => {
         isSelectionChange.current = true;

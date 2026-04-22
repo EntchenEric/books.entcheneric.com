@@ -1,12 +1,16 @@
 import { verifySession } from '@/app/lib/dal';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/app/lib/prisma'
+import { UpdateUserSchema } from '@/app/lib/api-schemas';
 import { NextRequest, NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json()
+        const validated = UpdateUserSchema.safeParse(body)
+        if (!validated.success) {
+            return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+        }
+        const { title, description } = validated.data
 
         const session = await verifySession()
 
@@ -17,10 +21,9 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const changed_data = {
-            title: body.title,
-            description: body.description,
-        }
+        const changed_data: { title?: string; description?: string } = {}
+        if (title !== undefined) changed_data.title = title
+        if (description !== undefined) changed_data.description = description
 
         const user = await prisma.user.update({
             where: {
@@ -32,8 +35,9 @@ export async function POST(request: NextRequest) {
             }
         })
 
-        return NextResponse.json(user);
+        const { passwordHash, ...safeUser } = user;
+        return NextResponse.json(safeUser);
     } catch (error) {
-        return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
     }
 }

@@ -1,17 +1,16 @@
 import { POST } from '@/app/api/search_books/route';
-import { PrismaClient } from '@prisma/client';
 
-jest.mock('@prisma/client', () => {
-  const mPrisma = {
+jest.mock('@/app/lib/prisma', () => ({
+  prisma: {
     user: {
       findUnique: jest.fn(),
     },
-  };
-  return { PrismaClient: jest.fn(() => mPrisma) };
-});
+  },
+}));
 
 jest.mock('next/server', () => {
   return {
+    NextRequest: jest.fn(),
     NextResponse: {
       json: (data, init) => ({
         status: init?.status ?? 200,
@@ -20,6 +19,12 @@ jest.mock('next/server', () => {
     },
   };
 });
+
+jest.mock('@/app/lib/rate-limit', () => ({
+  rateLimitByIp: jest.fn().mockResolvedValue({ success: true }),
+}));
+
+const { prisma } = require('@/app/lib/prisma');
 
 function createMockRequest(body) {
   return {
@@ -30,9 +35,8 @@ function createMockRequest(body) {
 global.fetch = jest.fn();
 
 describe('POST /api/search_books', () => {
-  let prisma;
-
   const originalEnv = process.env;
+
   beforeAll(() => {
     process.env = { ...originalEnv, GOOGLE_API_KEY: 'test-api-key' };
   });
@@ -43,7 +47,6 @@ describe('POST /api/search_books', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    prisma = new PrismaClient();
     fetch.mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue({ items: [] }),
@@ -52,15 +55,15 @@ describe('POST /api/search_books', () => {
 
   it('should return a list of books for a basic query', async () => {
     const mockBooks = Array.from({ length: 25 }, (_, i) => ({ id: `book${i}`, volumeInfo: { title: `Book ${i}` } }));
-    
+
     prisma.user.findUnique.mockResolvedValueOnce({ books: [] });
     fetch.mockResolvedValueOnce({
       ok: true,
       json: jest.fn().mockResolvedValueOnce({ items: mockBooks }),
     });
 
-    const request = createMockRequest({ userId: 1, query: 'fantasy' });
-    
+    const request = createMockRequest({ userId: '550e8400-e29b-41d4-a716-446655440001', query: 'fantasy' });
+
     const response = await POST(request);
     const data = await response.json();
 
@@ -76,7 +79,7 @@ describe('POST /api/search_books', () => {
   it('should correctly add the author to the search query', async () => {
     prisma.user.findUnique.mockResolvedValueOnce({ books: [] });
 
-    const request = createMockRequest({ userId: 1, query: 'dune', author: 'herbert' });
+    const request = createMockRequest({ userId: '550e8400-e29b-41d4-a716-446655440001', query: 'dune', author: 'herbert' });
     await POST(request);
 
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -97,7 +100,7 @@ describe('POST /api/search_books', () => {
       json: jest.fn().mockResolvedValueOnce({ items: apiBooks }),
     });
 
-    const request = createMockRequest({ userId: 1, query: 'sci-fi' });
+    const request = createMockRequest({ userId: '550e8400-e29b-41d4-a716-446655440001', query: 'sci-fi' });
     const response = await POST(request);
     const data = await response.json();
 
@@ -115,7 +118,7 @@ describe('POST /api/search_books', () => {
       .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValueOnce({ items: page1Books }) })
       .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValueOnce({ items: page2Books }) });
 
-    const request = createMockRequest({ userId: 1, query: 'history' });
+    const request = createMockRequest({ userId: '550e8400-e29b-41d4-a716-446655440001', query: 'history' });
     const response = await POST(request);
     const data = await response.json();
 
@@ -130,7 +133,7 @@ describe('POST /api/search_books', () => {
     prisma.user.findUnique.mockResolvedValueOnce({ books: [] });
     fetch.mockResolvedValueOnce({ ok: false, status: 503 });
 
-    const request = createMockRequest({ userId: 1, query: 'error-query' });
+    const request = createMockRequest({ userId: '550e8400-e29b-41d4-a716-446655440001', query: 'error-query' });
     const response = await POST(request);
     const data = await response.json();
 
@@ -141,7 +144,7 @@ describe('POST /api/search_books', () => {
   it('should return a 500 status if the database query fails', async () => {
     prisma.user.findUnique.mockRejectedValueOnce(new Error('Database error'));
 
-    const request = createMockRequest({ userId: 1, query: 'any-query' });
+    const request = createMockRequest({ userId: '550e8400-e29b-41d4-a716-446655440001', query: 'any-query' });
     const response = await POST(request);
     const data = await response.json();
 
@@ -155,8 +158,8 @@ describe('POST /api/search_books', () => {
       ok: true,
       json: jest.fn().mockResolvedValueOnce({ items: null }),
     });
-    
-    const request = createMockRequest({ userId: 1, query: 'a-very-obscure-book-title' });
+
+    const request = createMockRequest({ userId: '550e8400-e29b-41d4-a716-446655440001', query: 'a-very-obscure-book-title' });
     const response = await POST(request);
     const data = await response.json();
 

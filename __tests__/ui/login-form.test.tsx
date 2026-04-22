@@ -11,6 +11,8 @@ jest.mock('lucide-react', () => ({
     ...jest.requireActual('lucide-react'),
     Loader2: () => <div data-testid="loader" />,
     AlertCircle: () => <div data-testid="alert-icon" />,
+    Eye: () => <div data-testid="eye-icon" />,
+    EyeOff: () => <div data-testid="eye-off-icon" />,
 }));
 
 describe('LoginForm Component', () => {
@@ -25,7 +27,7 @@ describe('LoginForm Component', () => {
         render(<LoginForm name="test" />)
 
         await user.type(screen.getByLabelText(/name/i), 'John Doe')
-        await user.type(screen.getByLabelText(/passwort/i), 'password123')
+        await user.type(screen.getByLabelText(/^passwort$/i), 'password123')
 
         await user.click(screen.getByRole('button', { name: /anmelden/i }))
 
@@ -47,7 +49,7 @@ describe('LoginForm Component', () => {
         render(<LoginForm name="test" />)
 
         await user.type(screen.getByLabelText(/name/i), 'ValidUser')
-        await user.type(screen.getByLabelText(/passwort/i), 'validpassword')
+        await user.type(screen.getByLabelText(/^passwort$/i), 'validpassword')
         await user.click(screen.getByRole('button', { name: /anmelden/i }))
 
         await waitFor(() => {
@@ -64,7 +66,7 @@ describe('LoginForm Component', () => {
         render(<LoginForm name="test" />)
 
         await user.type(screen.getByLabelText(/name/i), 'John Doe')
-        await user.type(screen.getByLabelText(/passwort/i), 'password123')
+        await user.type(screen.getByLabelText(/^passwort$/i), 'password123')
         await user.click(screen.getByRole('button', { name: /anmelden/i }))
 
         await waitFor(() => {

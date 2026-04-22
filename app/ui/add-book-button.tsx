@@ -1,3 +1,5 @@
+"use client";
+
 import {
     Dialog,
     DialogContent,
@@ -12,6 +14,7 @@ import { useState } from "react";
 import { BookItem, Book } from "../lib/definitions";
 import AddBookForm from "./add-book-form";
 import { PlusIcon, ArrowLeftIcon } from "lucide-react";
+import Image from "next/image";
 
 type AddBookButtonProps = {
     readonly addBook: (book: Book) => void,
@@ -80,10 +83,13 @@ export default function AddBookButton({ addBook, userId }: AddBookButtonProps) {
                         </DialogHeader>
 
                         <div className="flex items-start gap-4 rounded-md border p-4">
-                            <img
+                            <Image
                                 src={selectedBook.volumeInfo.imageLinks?.thumbnail ?? 'https://books.google.com/googlebooks/images/no_cover_thumb.gif'}
                                 alt={`Cover of ${selectedBook.volumeInfo.title}`}
+                                width={80}
+                                height={112}
                                 className="h-28 w-auto rounded-sm shadow-md"
+                                unoptimized
                             />
                             <div>
                                 <h3 className="font-semibold tracking-tight">{selectedBook.volumeInfo.title}</h3>

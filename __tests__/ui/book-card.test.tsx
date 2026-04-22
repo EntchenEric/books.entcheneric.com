@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import BookCard from '@/app/ui/book-card'
@@ -42,7 +42,7 @@ describe('BookCard Component', () => {
         const user = userEvent.setup()
         render(<BookCard frontendBook={mockBook} isOwner={true} />)
 
-        const markAsPurchasedButton = screen.getByRole('button', { name: /als gekauft makieren/i })
+        const markAsPurchasedButton = screen.getByRole('button', { name: /als gekauft markieren/i })
         expect(markAsPurchasedButton).toBeInTheDocument()
 
         fetch.mockResolvedValueOnce({

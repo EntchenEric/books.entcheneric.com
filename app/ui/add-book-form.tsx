@@ -27,7 +27,16 @@ import {
 } from "@/components/ui/tooltip"
 import { AddBookFormSchema } from "../lib/definitions";
 
-type AddBookFormValues = z.infer<typeof AddBookFormSchema>;
+const BaseAddBookFormSchema = z.object({
+    bookId: z.string(),
+    isWishlisted: z.boolean(),
+    addSeries: z.boolean(),
+    markAllAsFinished: z.boolean(),
+    keepOpen: z.boolean(),
+    pageProgress: z.number().int().min(0).optional(),
+});
+
+type AddBookFormValues = z.infer<typeof BaseAddBookFormSchema>;
 
 function SubmitButton({ pending }: { readonly pending: boolean }) {
     return (
@@ -54,8 +63,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
     const [isPending, startTransition] = useTransition();
 
     const form = useForm<AddBookFormValues>({
-        //@ts-ignore
-        resolver: zodResolver(AddBookFormSchema),
+        resolver: zodResolver(BaseAddBookFormSchema),
         defaultValues: {
             bookId: book.id,
             pageProgress: 0,
@@ -76,9 +84,10 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
         }
     }, [watchIsWishlisted, watchAddSeries, form]);
 
+    const keepOpenValue = form.watch("keepOpen");
     useEffect(() => {
-        setKeepOpen(form.getValues("keepOpen"));
-    }, [form.watch("keepOpen"), setKeepOpen, form]);
+        setKeepOpen(keepOpenValue);
+    }, [keepOpenValue, setKeepOpen]);
 
 
     async function onSubmit(values: AddBookFormValues) {
@@ -95,7 +104,7 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
             toast.dismiss(toastId);
             if (state?.success && state.books) {
                 toast.success("Buch erfolgreich hinzugefügt!");
-                state.books.forEach((book) => addBook(book as any));
+                state.books.forEach((book) => addBook(book));
                 if (!values.keepOpen) {
                     form.reset();
                 }
@@ -110,17 +119,14 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
 
     return (
         <Form {...form}>
-            {/*@ts-ignore*/}
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-2">
                 <FormField
-                    //@ts-ignore
                     control={form.control}
                     name="bookId"
                     render={({ field }) => <input type="hidden" {...field} />}
                 />
 
                 <FormField
-                    //@ts-ignore
                     control={form.control}
                     name="pageProgress"
                     render={({ field }) => (
@@ -136,6 +142,8 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
                                         className="w-24"
                                         disabled={watchIsWishlisted || watchAddSeries}
                                         {...field}
+                                        onChange={(e) => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
+                                        value={field.value ?? ''}
                                     />
                                 </FormControl>
                                 <span className="text-sm text-muted-foreground">
@@ -150,7 +158,6 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
 
                 <div className="space-y-3">
                     <FormField
-                        //@ts-ignore
                         control={form.control}
                         name="isWishlisted"
                         render={({ field }) => (
@@ -171,7 +178,6 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
                     />
 
                     <FormField
-                        //@ts-ignore
                         control={form.control}
                         name="addSeries"
                         render={({ field }) => (
@@ -200,7 +206,6 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
 
                     {watchAddSeries && (
                         <FormField
-                            //@ts-ignore
                             control={form.control}
                             name="markAllAsFinished"
                             render={({ field }) => (
@@ -221,7 +226,6 @@ export default function AddBookForm({ book, addBook, setKeepOpen }: AddBookFormP
                     )}
 
                     <FormField
-                        //@ts-ignore
                         control={form.control}
                         name="keepOpen"
                         render={({ field }) => (

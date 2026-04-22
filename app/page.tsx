@@ -1,6 +1,7 @@
 import { CardHeader, Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Library, BookHeart, LockKeyhole, Code2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -14,11 +15,11 @@ export default function Home() {
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
           Verliere nie wieder den Überblick über deine Lesereise. Sammle, organisiere und entdecke deine Lieblingsbücher - alles an einem Ort.
         </p>
-        <a href="/register">
+        <Link href="/register">
           <Button size="lg" className="group">
             Jetzt kostenlos starten <ArrowRight className="inline-block ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
-        </a>
+        </Link>
       </header>
 
       <div className="grid md:grid-cols-3 gap-8 my-20">
@@ -45,7 +46,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Ein Hobbyprojekt von mir, mit Liebe in der Freizeit gecodet. Hier geht's nicht ums Geld, sondern um die Leidenschaft für Bücher und Code. Der Quellcode ist auf <a href="https://github.com/EntchenEric/books.entcheneric.com" className="font-semibold text-primary underline" target="_blank" rel="noopener noreferrer">GitHub</a> einsehbar. Mehr über mich? Schau auf <a href="https://entcheneric.com" className="font-semibold text-primary underline" target="_blank" rel="noopener noreferrer">meinem Portfolio</a> vorbei.
+              Ein Hobbyprojekt von mir, mit Liebe in der Freizeit gecodet. Hier geht&apos;s nicht ums Geld, sondern um die Leidenschaft für Bücher und Code. Der Quellcode ist auf <Link href="https://github.com/EntchenEric/books.entcheneric.com" className="font-semibold text-primary underline" target="_blank" rel="noopener noreferrer">GitHub</Link> einsehbar. Mehr über mich? Schau auf <Link href="https://entcheneric.com" className="font-semibold text-primary underline" target="_blank" rel="noopener noreferrer">meinem Portfolio</Link> vorbei.
             </p>
           </CardContent>
         </Card>

@@ -36,7 +36,7 @@ export default function ProfilePageSkeleton() {
                             <Skeleton className="h-40 w-full rounded-t-lg" />
                             <div className="p-6">
                                 <Skeleton className="h-5 w-4/5 mb-2" />
-                                <Skeleton className="h-4 w-3/g" />
+                                <Skeleton className="h-4 w-3/4" />
                                 <Skeleton className="h-10 w-full mt-4" />
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
+import Link from "next/link"
 import type { Session, UserWithBooks, Book } from "@/app/lib/definitions"
 import { verifySession } from "@/app/lib/dal"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -190,7 +191,7 @@ export default function ProfilePage({
                                     {series}
                                 </h1>
                                 <p className="mt-1 text-muted-foreground">
-                                    Alle Bücher aus der Reihe "{series}" von {dbUser.url}
+                                    Alle Bücher aus der Reihe &ldquo;{series}&rdquo; von {dbUser.url}
                                 </p>
                             </div>
                         </div>
@@ -231,12 +232,12 @@ export default function ProfilePage({
                 setWishlistStatus={setWishlistStatus}
             />
 
-            <a href={"/" + dbUser.url} className="mb-4 inline-flex items-center text-sm font-medium text-primary hover:underline">
+            <Link href={"/" + dbUser.url} className="mb-4 inline-flex items-center text-sm font-medium text-primary hover:underline">
                 <Button variant="outline" size="sm" className="mb-4">
                     <MoveLeft className="mr-2 h-4 w-4" />
                     Zurück zur gesammten Bibliothek
                 </Button>
-            </a>
+            </Link>
 
 
             <BookDisplay

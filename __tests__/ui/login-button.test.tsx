@@ -26,6 +26,6 @@ describe('LoginButton Component', () => {
         expect(screen.getByText('Bitte melde dich an.')).toBeInTheDocument()
 
         expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
-        expect(screen.getByLabelText(/passwort/i)).toBeInTheDocument()
+        expect(screen.getByLabelText(/^passwort$/i)).toBeInTheDocument()
     })
 })

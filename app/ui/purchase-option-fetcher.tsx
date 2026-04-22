@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+"use client";
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Book, PurchaseOption, BookItem } from '../lib/definitions';
 import { PurchaseOptionCache } from '@prisma/client';
 
@@ -73,7 +76,7 @@ export default function PurchaseOptionsFetcher({ book }: PurchaseOptionFetcherPr
                 .catch(() => setError("Kaufoptionen konnten nicht geladen werden."))
                 .finally(() => setIsLoading(false));
         }
-    }, [book.title, book.wishlisted]);
+    }, [book.title, book.wishlisted, book.googleBookId, book.id]);
 
     if (!book.wishlisted) return null;
 
@@ -90,10 +93,10 @@ export default function PurchaseOptionsFetcher({ book }: PurchaseOptionFetcherPr
                     }
                     <div className="space-y-2" id="BuyOptionList">
                         {options.map((opt) => (
-                            <a href={opt.url} key={opt.storeName} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center bg-muted hover:bg-muted/50 p-2 rounded-md transition-colors">
+                            <Link href={opt.url} key={opt.storeName} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center bg-muted hover:bg-muted/50 p-2 rounded-md transition-colors">
                                 <span className="text-muted-foreground">{opt.storeName}</span>
                                 <span className="font-bold text-muted-foreground">{opt.price}</span>
-                            </a>
+                            </Link>
                         ))}
                     </div>
                 </>

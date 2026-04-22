@@ -1,13 +1,17 @@
 import { GET } from '@/app/api/image-proxy/route';
 
 jest.mock('next/server', () => ({
+  NextRequest: jest.fn(),
   NextResponse: {
     json: (data, init) => ({
       status: init?.status ?? 200,
       json: async () => data,
     }),
   },
-  Response: jest.requireActual('next/server').Response,
+}));
+
+jest.mock('@/app/lib/rate-limit', () => ({
+  rateLimitByIp: jest.fn().mockResolvedValue({ success: true }),
 }));
 
 function createMockRequest(searchParams) {
@@ -20,30 +24,28 @@ function createMockRequest(searchParams) {
   };
 }
 
-
 describe('GET /api/image-proxy', () => {
-
   beforeEach(() => {
     fetch.resetMocks();
   });
 
   it('should successfully proxy a valid image from Google Books', async () => {
-    const imageUrl = 'http://books.google.com/books/content?id=123';
+    const imageUrl = 'https://books.google.com/books/content?id=123';
     const mockImageBuffer = Buffer.from('mock-image-data');
     const mockContentType = 'image/jpeg';
 
     fetch.mockResponseOnce(mockImageBuffer, {
-        headers: { 'Content-Type': mockContentType },
+      headers: { 'Content-Type': mockContentType },
     });
 
     const request = createMockRequest({ url: imageUrl });
 
     const response = await GET(request);
 
-    expect(fetch).toHaveBeenCalledWith(imageUrl);
+    expect(fetch).toHaveBeenCalledWith(imageUrl, { signal: expect.any(AbortSignal) });
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toBe(mockContentType);
-    
+
     const responseBuffer = Buffer.from(await response.arrayBuffer());
     expect(responseBuffer).toEqual(mockImageBuffer);
   });
@@ -58,14 +60,25 @@ describe('GET /api/image-proxy', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it('should return a 403 error for non-allowed hostnames', async () => {
+    const imageUrl = 'https://evil.com/image.jpg';
+    const request = createMockRequest({ url: imageUrl });
+
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(data).toEqual({ error: 'Only books.google.com images are allowed.' });
+  });
+
   it('should return a 500 error if the image fetch fails', async () => {
-    const imageUrl = 'http://books.google.com/books/content?id=not-found';
+    const imageUrl = 'https://books.google.com/books/content?id=not-found';
     fetch.mockResponseOnce('', { status: 404 });
     const request = createMockRequest({ url: imageUrl });
 
     const response = await GET(request);
     const data = await response.json();
-    
+
     expect(response.status).toBe(500);
     expect(data).toEqual({ error: 'Internal Server Error.' });
   });

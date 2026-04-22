@@ -10,6 +10,8 @@ jest.mock('../../app/actions/auth', () => ({
 jest.mock('lucide-react', () => ({
     ...jest.requireActual('lucide-react'),
     Loader2: () => <div data-testid="loader" />,
+    Eye: () => <div data-testid="eye-icon" />,
+    EyeOff: () => <div data-testid="eye-off-icon" />,
 }));
 describe('SignupForm Component', () => {
     beforeEach(() => {
@@ -22,7 +24,7 @@ describe('SignupForm Component', () => {
         render(<SignupForm />)
 
         await user.type(screen.getByLabelText(/name/i), 'John Doe')
-        await user.type(screen.getByLabelText(/passwort/i), 'password123')
+        await user.type(screen.getByLabelText(/^passwort$/i), 'password123')
 
         await user.click(screen.getByRole('button', { name: /registrieren/i }))
 
@@ -44,7 +46,7 @@ describe('SignupForm Component', () => {
         render(<SignupForm />)
 
         await user.type(screen.getByLabelText(/name/i), 'John')
-        await user.type(screen.getByLabelText(/passwort/i), 'password')
+        await user.type(screen.getByLabelText(/^passwort$/i), 'password')
         await user.click(screen.getByRole('button', { name: /registrieren/i }))
 
         await waitFor(() => {
@@ -60,7 +62,7 @@ describe('SignupForm Component', () => {
         render(<SignupForm />)
 
         await user.type(screen.getByLabelText(/name/i), 'John Doe')
-        await user.type(screen.getByLabelText(/passwort/i), 'password123')
+        await user.type(screen.getByLabelText(/^passwort$/i), 'password123')
         await user.click(screen.getByRole('button', { name: /registrieren/i }))
 
         await waitFor(() => {

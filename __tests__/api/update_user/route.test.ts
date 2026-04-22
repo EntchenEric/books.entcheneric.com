@@ -79,6 +79,6 @@ describe('POST /api/update_user', () => {
     const data = await response.json()
 
     expect(response.status).toBe(500)
-    expect(data).toEqual({ message: 'Internal server error' })
+    expect(data).toEqual({ error: 'Internal server error' })
   })
 })

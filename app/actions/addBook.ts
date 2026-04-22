@@ -1,10 +1,16 @@
 "use server";
 
-import { Book, PrismaClient } from '@prisma/client'
+import { Book } from '@prisma/client'
 import { AddBookFormSchema, AddBookFormState, BookItem } from '@/app/lib/definitions'
 import { verifySession } from '../lib/dal';
+import { prisma } from '@/app/lib/prisma'
+import { similarity } from '@/app/lib/levenshtein'
 
-const prisma = new PrismaClient()
+function safeParseYear(dateStr: string | undefined): number {
+    if (!dateStr) return 0;
+    const year = parseInt(dateStr.split("-")[0] ?? "0", 10);
+    return isNaN(year) ? 0 : year;
+}
 
 export async function addbook(state: AddBookFormState, formData: FormData): Promise<{ success: boolean, books?: Book[], errors?: Record<string, string[]> }> {
     const session = await verifySession()
@@ -46,9 +52,9 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
 
     const { bookId, pageProgress } = validatedFields.data
 
-    const resposne = await fetch("https://www.googleapis.com/books/v1/volumes/" + bookId);
+    const response = await fetch("https://www.googleapis.com/books/v1/volumes/" + bookId);
 
-    if (!resposne.ok) {
+    if (!response.ok) {
         return {
             success: false,
             errors: {
@@ -57,7 +63,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
         }
     }
 
-    const BookData: BookItem = await resposne.json()
+    const BookData: BookItem = await response.json()
 
     if (!addSeries) {
 
@@ -69,7 +75,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
                 pages: BookData.volumeInfo?.pageCount ?? 0,
                 progress: pageProgress,
                 description: BookData.volumeInfo?.description || null,
-                publicationYear: parseInt(BookData.volumeInfo?.publishedDate?.split("-")[0] ?? "0"),
+                publicationYear: safeParseYear(BookData.volumeInfo?.publishedDate),
                 thumbnail: BookData.volumeInfo?.imageLinks?.thumbnail ?? "https://books.google.com/googlebooks/images/no_cover_thumb.gif",
                 googleBookId: BookData.id,
                 ISBNumber: BookData.volumeInfo?.industryIdentifiers?.find(id => id.type === "ISBN_13")?.identifier ?? null,
@@ -85,7 +91,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
         }
     }
 
-    const searchResults = await fetch("http://localhost:3000//api/search_books", {
+    const searchResults = await fetch(`${process.env.NEXTAUTH_URL}/api/search_books`, {
         method: 'POST',
         body: JSON.stringify({
             query: BookData.volumeInfo?.title?.slice(0, Math.floor(BookData.volumeInfo.title.length * 0.85)),
@@ -111,31 +117,6 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
                 bookId: ["Buch nicht gefunden. Bitte versuche es später noch einmal."]
             }
         }
-    }
-
-    function similarity(a: string, b: string): number {
-        if (!a || !b) return 0;
-        const length = Math.max(a.length, b.length);
-        let distance = 0;
-        const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
-        for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-        for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
-        for (let i = 1; i <= a.length; i++) {
-            for (let j = 1; j <= b.length; j++) {
-                if (a[i - 1] === b[j - 1]) {
-                    matrix[i][j] = matrix[i - 1][j - 1];
-                } else {
-                    matrix[i][j] = Math.min(
-                        matrix[i - 1][j] + 1,
-                        matrix[i][j - 1] + 1,
-                        matrix[i - 1][j - 1] + 1
-                    );
-                }
-            }
-        }
-        distance = matrix[a.length][b.length];
-        const similarity = 1 - distance / length
-        return similarity;
     }
 
     const booksInSeries = searchData.items.filter((item: BookItem) => {
@@ -167,7 +148,7 @@ export async function addbook(state: AddBookFormState, formData: FormData): Prom
             pages: item.volumeInfo?.pageCount ?? 0,
             progress: markAllAsFinished ? item.volumeInfo?.pageCount ?? 0 : 0,
             description: item.volumeInfo?.description || null,
-            publicationYear: parseInt(item.volumeInfo?.publishedDate?.split("-")[0] ?? "0"),
+            publicationYear: safeParseYear(item.volumeInfo?.publishedDate),
             thumbnail: item.volumeInfo?.imageLinks?.thumbnail ?? "https://books.google.com/googlebooks/images/no_cover_thumb.gif",
             googleBookId: item.id,
             ISBNumber: item.volumeInfo?.industryIdentifiers?.find(id => id.type === "ISBN_13")?.identifier ?? null,

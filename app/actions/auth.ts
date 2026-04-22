@@ -1,14 +1,18 @@
 "use server";
 
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/app/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { SignupFormSchema, FormState } from '@/app/lib/definitions'
 import { createSession } from '@/app/lib/session'
 import { redirect } from 'next/navigation'
+import { rateLimitByIp } from '@/app/lib/rate-limit'
 
-const prisma = new PrismaClient()
+export async function signup(state: FormState, formData: FormData): Promise<FormState> {
+    const limit = await rateLimitByIp('signup', 60_000, 3)
+    if (!limit.success) {
+        return { errors: { form: ['Zu viele Versuche. Bitte warte einen Moment.'] } }
+    }
 
-export async function signup(state: FormState, formData: FormData) {
     const validatedFields = SignupFormSchema.safeParse({
         name: formData.get('name'),
         password: formData.get('password'),
@@ -53,7 +57,12 @@ export async function signup(state: FormState, formData: FormData) {
 }
 
 
-export async function login(state: FormState, formData: FormData) {
+export async function login(state: FormState, formData: FormData): Promise<FormState> {
+    const limit = await rateLimitByIp('login', 60_000, 5)
+    if (!limit.success) {
+        return { errors: { form: ['Zu viele Versuche. Bitte warte einen Moment.'] } }
+    }
+
     const validatedFields = SignupFormSchema.safeParse({
         name: formData.get('name'),
         password: formData.get('password'),
@@ -72,7 +81,7 @@ export async function login(state: FormState, formData: FormData) {
         }
     })
 
-    if (!dbUser || !bcrypt.compare(password, dbUser?.passwordHash)) {
+    if (!dbUser || !(await bcrypt.compare(password, dbUser.passwordHash))) {
         return {
             errors: {
                 password: [

@@ -2,6 +2,7 @@ import { Book, User } from "@/app/lib/definitions"
 import { BookIcon, BookOpenCheck } from "lucide-react"
 import AddBookButton from "../add-book-button"
 import BookCard, { BookCardComponent } from "@/app/ui/book-card"
+import Link from "next/link"
 
 type BookDisplayProps = {
     readonly filteredAndSortedBooks: Book[],
@@ -41,11 +42,11 @@ export default function BookDisplay({
                 {filteredAndSortedBooks.map((book) => (
                     <div key={book.id} className="h-full">
                         {book.ISBNumber === "SERIES" ? (
-                            <a href={`${dbUser.url}/${book.title}`} key={book.id} className="group">
+                            <Link href={`${dbUser.url}/${book.title}`} key={book.id} className="group">
                                 <BookCardComponent book={book} key={book.id} progressPercentage={book?.progress != null && book?.pages != null && book?.pages > 0
                                     ? (book.progress / book.pages) * 100
                                     : 0} />
-                            </a>
+                            </Link>
                         ) : (
                             <BookCard frontendBook={book} key={book.id} isOwner={isOwner} />
                         )}

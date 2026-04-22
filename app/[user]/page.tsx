@@ -55,7 +55,7 @@ export default function ProfilePage({
                     if (!res.ok) {
                         setHasError(true);
                     } else {
-                        const userData = await res.json();
+                        const userData = await res.json() as UserWithBooks;
                         setDbUser(userData);
                         setFilteredAndSortedBooks(userData?.books || []);
                         setEditableTitle(userData.title || `${userData.url}'s Library`);
@@ -76,7 +76,7 @@ export default function ProfilePage({
             return;
         }
 
-        const seriesMap = dbUser.books.reduce((acc, book) => {
+        const seriesMap = dbUser.books.reduce((acc: Record<string, Book[]>, book: Book) => {
             const baseTitle = book.title.replace(/\s+(?:Vol\.?|#)?\d+$/i, '').trim();
             const seriesKey = `${book.author.toLowerCase()}-${baseTitle.toLowerCase()}`;
             if (!acc[seriesKey]) {
@@ -86,7 +86,7 @@ export default function ProfilePage({
             return acc;
         }, {} as Record<string, Book[]>);
 
-        let combinedItems: Book[] = Object.values(seriesMap).flatMap(group => {
+        let combinedItems: Book[] = (Object.values(seriesMap) as Book[][]).flatMap(group => {
             if (group.length > 1) {
                 group.sort((a, b) => {
                     const numA = parseInt(a.title.match(/\d+$/)?.[0] || '0');

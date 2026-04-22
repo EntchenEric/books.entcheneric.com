@@ -8,6 +8,9 @@ import { redirect } from 'next/navigation'
 
 
 const secretKey = process.env.SESSION_SECRET
+if (!secretKey || secretKey.length < 32) {
+  throw new Error('SESSION_SECRET muss mindestens 32 Zeichen lang sein und in der Umgebung gesetzt sein.')
+}
 const isSecure = process.env.NODE_ENV === 'production'
 const encodedKey = new TextEncoder().encode(secretKey)
 

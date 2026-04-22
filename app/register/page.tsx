@@ -6,6 +6,7 @@ import { BookMarked } from "lucide-react";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const [accountName, setAccountName] = useState("")
@@ -48,11 +49,11 @@ export default function RegisterPage() {
             placeholder="Name"
           />
           {
-            accountName && <a href={`/${encodeURIComponent(accountName)}`}>
+            accountName && <Link href={`/${encodeURIComponent(accountName)}`}>
               <Button>
                 Zum account
               </Button>
-            </a>
+            </Link>
           }
         </div>
       </div>

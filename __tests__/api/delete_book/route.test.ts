@@ -1,22 +1,21 @@
 import { POST } from '@/app/api/delete_book/route';
 import { verifySession } from '@/app/lib/dal';
-import { PrismaClient } from '@prisma/client';
 
-jest.mock('../../../app/lib/dal', () => ({
+jest.mock('@/app/lib/dal', () => ({
   verifySession: jest.fn(),
 }));
 
-jest.mock('@prisma/client', () => {
-  const mPrisma = {
+jest.mock('@/app/lib/prisma', () => ({
+  prisma: {
     book: {
       findUnique: jest.fn(),
       delete: jest.fn(),
     },
-  };
-  return { PrismaClient: jest.fn(() => mPrisma) };
-});
+  },
+}));
 
 jest.mock('next/server', () => ({
+  NextRequest: jest.fn(),
   NextResponse: {
     json: (data, init) => ({
       status: init?.status ?? 200,
@@ -25,6 +24,8 @@ jest.mock('next/server', () => ({
   },
 }));
 
+const { prisma } = require('@/app/lib/prisma');
+
 function createMockRequest(body) {
   return {
     json: jest.fn().mockResolvedValue(body),
@@ -32,22 +33,18 @@ function createMockRequest(body) {
 }
 
 describe('POST /api/delete_book', () => {
-  let prisma;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    prisma = new PrismaClient();
   });
 
   it('should delete the book if the user is authenticated and owns the book', async () => {
-    const bookIdToDelete = 1;
-    const sessionOwnerId = 101;
-    
+    const bookIdToDelete = '550e8400-e29b-41d4-a716-446655440001';
+    const sessionOwnerId = '550e8400-e29b-41d4-a716-446655440010';
+
     verifySession.mockResolvedValue({ userId: sessionOwnerId });
 
-    const mockBook = { id: bookIdToDelete, user: { id: sessionOwnerId } };
+    const mockBook = { id: bookIdToDelete, userId: sessionOwnerId };
     prisma.book.findUnique.mockResolvedValue(mockBook);
-
     prisma.book.delete.mockResolvedValue({ id: bookIdToDelete });
 
     const request = createMockRequest({ id: bookIdToDelete });
@@ -59,7 +56,7 @@ describe('POST /api/delete_book', () => {
     expect(data).toEqual({ message: 'Book deleted successfully' });
     expect(prisma.book.findUnique).toHaveBeenCalledWith({
       where: { id: bookIdToDelete },
-      include: { user: true },
+      select: { userId: true },
     });
     expect(prisma.book.delete).toHaveBeenCalledWith({
       where: { id: bookIdToDelete },
@@ -68,7 +65,7 @@ describe('POST /api/delete_book', () => {
 
   it('should return 401 Unauthorized if there is no active session', async () => {
     verifySession.mockResolvedValue(null);
-    const request = createMockRequest({ id: 1 });
+    const request = createMockRequest({ id: '550e8400-e29b-41d4-a716-446655440001' });
 
     const response = await POST(request);
     const data = await response.json();
@@ -80,15 +77,15 @@ describe('POST /api/delete_book', () => {
   });
 
   it('should return 401 Unauthorized if the user does not own the book', async () => {
-    const bookIdToDelete = 2;
-    const sessionOwnerId = 101;
-    const bookOwnerId = 202;
+    const bookIdToDelete = '550e8400-e29b-41d4-a716-446655440002';
+    const sessionOwnerId = '550e8400-e29b-41d4-a716-446655440010';
+    const bookOwnerId = '550e8400-e29b-41d4-a716-446655440020';
 
     verifySession.mockResolvedValue({ userId: sessionOwnerId });
-    
-    const mockBook = { id: bookIdToDelete, user: { id: bookOwnerId } };
+
+    const mockBook = { id: bookIdToDelete, userId: bookOwnerId };
     prisma.book.findUnique.mockResolvedValue(mockBook);
-    
+
     const request = createMockRequest({ id: bookIdToDelete });
 
     const response = await POST(request);
@@ -100,11 +97,11 @@ describe('POST /api/delete_book', () => {
   });
 
   it('should return 404 Not Found if the book does not exist', async () => {
-    verifySession.mockResolvedValue({ userId: 101 });
-    
+    verifySession.mockResolvedValue({ userId: '550e8400-e29b-41d4-a716-446655440010' });
+
     prisma.book.findUnique.mockResolvedValue(null);
-    
-    const request = createMockRequest({ id: 999 });
+
+    const request = createMockRequest({ id: '550e8400-e29b-41d4-a716-446655440999' });
 
     const response = await POST(request);
     const data = await response.json();
@@ -115,16 +112,16 @@ describe('POST /api/delete_book', () => {
   });
 
   it('should return 500 on a database error', async () => {
-    verifySession.mockResolvedValue({ userId: 101 });
-    
+    verifySession.mockResolvedValue({ userId: '550e8400-e29b-41d4-a716-446655440010' });
+
     prisma.book.findUnique.mockRejectedValue(new Error('DB Error'));
-    
-    const request = createMockRequest({ id: 1 });
+
+    const request = createMockRequest({ id: '550e8400-e29b-41d4-a716-446655440001' });
 
     const response = await POST(request);
     const data = await response.json();
 
     expect(response.status).toBe(500);
-    expect(data).toEqual({ message: 'Internal server error' });
+    expect(data).toEqual({ error: 'Internal server error' });
   });
 });
